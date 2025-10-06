@@ -7,6 +7,7 @@ This document defines the user experience goals, information architecture, user 
 ### Target User Personas
 
 **1. QMS Manager (Primary Persona)**
+
 - **Profile:** Compliance officer at small-medium manufacturing company (10-200 employees), managing ISO 9001/AS9100 document filing
 - **Technical Level:** Moderate—comfortable with Windows networks, basic software configuration, not a developer
 - **Daily Context:** Receives 5-50 scanned documents daily (packing lists, POs, inspection reports), must file accurately for audit compliance
@@ -15,6 +16,7 @@ This document defines the user experience goals, information architecture, user 
 - **Success Metric:** Review and approve 10 documents in <3 minutes (vs 30 minutes manually)
 
 **2. Medical Office Staff (Secondary Persona)**
+
 - **Profile:** Administrative staff at small medical practice (1-5 providers), handling patient charts and insurance forms
 - **Technical Level:** Basic—uses email and EHR systems, prefers simple interfaces
 - **Daily Context:** Scans 20-50 multi-page patient documents after appointments, must maintain HIPAA-compliant filing
@@ -23,6 +25,7 @@ This document defines the user experience goals, information architecture, user 
 - **Success Metric:** Complete document filing between patient appointments (<5 minute windows)
 
 **3. Power User/IT Administrator (Tertiary Persona)**
+
 - **Profile:** Technical user setting up and maintaining ai.scanner for their organization
 - **Technical Level:** High—comfortable with Docker, .env configuration, command line tools
 - **Context:** One-time setup, occasional system configuration updates, troubleshooting
@@ -53,9 +56,9 @@ This document defines the user experience goals, information architecture, user 
 
 ### Change Log
 
-| Date | Version | Description | Author |
-|------|---------|-------------|---------|
-| 2025-10-03 | 1.0 | Initial UI/UX Specification | Sally (UX Expert) |
+| Date       | Version | Description                 | Author            |
+| ---------- | ------- | --------------------------- | ----------------- |
+| 2025-10-03 | 1.0     | Initial UI/UX Specification | Sally (UX Expert) |
 
 ---
 
@@ -90,6 +93,7 @@ graph TD
 **Primary Navigation:** None—single-purpose application with linear workflow. Each document review is isolated session accessed via email link.
 
 **Secondary Navigation:** Minimal UI controls on Document Review page:
+
 - "Log Out" link in header (top-right)
 - "Mark for Manual Review" button (rejection path)
 - Breadcrumb-style document identifier (e.g., "Document 3 of 8 in batch from 10:45 AM")
@@ -107,10 +111,12 @@ graph TD
 **User Goal:** Review AI recommendation and approve correct routing for scanned document
 
 **Entry Points:**
+
 - Click document link in batch summary email
 - Direct URL access (if user bookmarked/saved link)
 
 **Success Criteria:**
+
 - Document filed to correct folder with proper filename
 - User sees confirmation within 3 seconds of approval
 - File operation completes successfully in background
@@ -164,6 +170,7 @@ graph TD
 **Entry Points:** Same as Flow 1 (email link)
 
 **Success Criteria:**
+
 - User successfully edits filename and/or folder path
 - Edited values validate correctly (no illegal characters, path exists)
 - Document files with user's corrections, not AI's original suggestion
@@ -192,7 +199,7 @@ graph TD
 
 #### Edge Cases & Error Handling:
 
-- **Invalid characters in filename:** Real-time validation highlights illegal characters (/ \ : * ? " < > |), shows corrected suggestion
+- **Invalid characters in filename:** Real-time validation highlights illegal characters (/ \ : \* ? " < > |), shows corrected suggestion
 - **Duplicate filename at destination:** Warning overlay: "File exists. Append (1)? Or overwrite?" with explicit choice
 - **Folder path doesn't exist:** Dropdown grayed out, show "Folder unavailable—contact admin" tooltip
 - **User edits then changes mind:** "Reset to AI suggestion" link restores original values
@@ -208,6 +215,7 @@ graph TD
 **Entry Points:** Document Review Page when user can't fix via editing
 
 **Success Criteria:**
+
 - Document marked for manual queue
 - User not blocked from continuing with other documents
 - Clear notification of what happens next with rejected document
@@ -241,11 +249,13 @@ graph TD
 **User Goal:** Securely access document review interface
 
 **Entry Points:**
+
 - First-time access from email link
 - Session expired
 - Logout then return
 
 **Success Criteria:**
+
 - User authenticates successfully
 - Session persists across multiple document reviews
 - Secure token handling (JWT)
@@ -291,6 +301,7 @@ graph TD
 **Purpose:** Secure authentication gate for document review access
 
 **Key Elements:**
+
 - Centered login card (max-width 400px) on neutral background
 - "ai.scanner" logo/wordmark at top
 - Username field (text input, labeled)
@@ -300,6 +311,7 @@ graph TD
 - Error message area (red text, appears above form on failure)
 
 **Interaction Notes:**
+
 - Enter key submits form from any field
 - Focus auto-placed on username field on page load
 - Password visibility toggle uses eye icon (standard pattern)
@@ -314,6 +326,7 @@ graph TD
 **Purpose:** Single-page interface for reviewing AI analysis and approving document routing
 
 **Key Elements:**
+
 - **Header Bar** (fixed top):
   - "ai.scanner" logo (left)
   - Document context text: "Document 3 of 8 from batch 10:45 AM" (center)
@@ -343,6 +356,7 @@ graph TD
     - "Mark for Manual Review" (secondary button, yellow/orange, smaller)
 
 **Interaction Notes:**
+
 - Keyboard shortcuts overlay (dismissible tooltip on first visit): "Press Enter to approve, Esc to reject"
 - Inline editing: click any field to edit, Tab to next field, Shift+Tab to previous
 - Real-time validation: filename field shows character count, highlights invalid characters
@@ -358,6 +372,7 @@ graph TD
 **Purpose:** Brief feedback confirming successful file operation
 
 **Key Elements:**
+
 - Centered success card (max-width 500px)
 - Large checkmark icon (green, animated check-draw on load)
 - Success message: "Document filed successfully!"
@@ -366,6 +381,7 @@ graph TD
 - Manual link: "Process another document" (returns to email)
 
 **Interaction Notes:**
+
 - Auto-redirects after 2 seconds (gives user time to see confirmation)
 - User can click manual link to skip countdown
 - Success animation plays once (no loop)
@@ -379,6 +395,7 @@ graph TD
 **Purpose:** Allow user to flag document for manual processing with optional note
 
 **Key Elements:**
+
 - Modal overlay (semi-transparent dark background)
 - Centered modal card (max-width 450px, white)
 - Title: "Mark for Manual Review"
@@ -387,6 +404,7 @@ graph TD
 - Two buttons: "Confirm" (yellow/orange), "Cancel" (gray outline)
 
 **Interaction Notes:**
+
 - Modal opens on "Mark for Manual Review" button click
 - Click outside modal or press Esc to cancel (returns to document review)
 - Confirm button submits note (if any) and processes rejection
@@ -409,12 +427,14 @@ graph TD
 **Purpose:** Primary interactive element for user actions (approve, reject, login)
 
 **Variants:**
+
 - **Primary:** Blue background (#2563eb), white text, full rounded corners (8px)
 - **Secondary:** White background, gray border, dark text
 - **Danger:** Red background (#dc2626), white text (for destructive actions, not used in MVP)
 - **Ghost:** Transparent background, colored text (for low-emphasis actions like "Cancel")
 
 **States:**
+
 - Default (idle)
 - Hover (darker shade, subtle lift shadow)
 - Active/Pressed (inner shadow, no lift)
@@ -422,6 +442,7 @@ graph TD
 - Loading (spinner replaces text content)
 
 **Usage Guidelines:**
+
 - Maximum one primary button per screen/card (guides user to main action)
 - Button text uses action verbs ("Approve & File" not "Submit")
 - Full-width on mobile (<768px), auto-width on desktop
@@ -434,11 +455,13 @@ graph TD
 **Purpose:** User-editable text fields (username, password, filename, notes)
 
 **Variants:**
+
 - **Standard:** Single-line text input with label above
 - **Password:** Single-line with show/hide toggle icon
 - **Textarea:** Multi-line for notes/descriptions
 
 **States:**
+
 - Default (gray border, white background)
 - Focus (blue border, glow shadow)
 - Error (red border, error icon, red helper text below)
@@ -446,8 +469,9 @@ graph TD
 - Success (green border, checkmark icon—for validated fields)
 
 **Usage Guidelines:**
+
 - Always include visible label (not just placeholder)
-- Helper text below field for format instructions (e.g., "No special characters: / \ : *")
+- Helper text below field for format instructions (e.g., "No special characters: / \ : \*")
 - Error messages specific and actionable ("Filename contains illegal character ':'. Remove it to continue.")
 - Autofocus on first field for login/modal forms
 
@@ -458,14 +482,17 @@ graph TD
 **Purpose:** Container for related content sections (AI analysis, routing recommendation)
 
 **Variants:**
+
 - **Standard:** White background, subtle border (1px gray), rounded corners (12px), padding (24px)
 - **Elevated:** Standard + box shadow for emphasis (used sparingly)
 
 **States:**
+
 - Default (static)
 - Hover (very subtle shadow increase—only for clickable cards in future features)
 
 **Usage Guidelines:**
+
 - Use for grouping related information (don't wrap entire page in one card)
 - Stack vertically with 16px gap on mobile, horizontal on desktop when space allows
 - Maximum width 600px for readability (text content)
@@ -477,6 +504,7 @@ graph TD
 **Purpose:** Display confidence scores and status indicators
 
 **Variants:**
+
 - **Confidence Score:** Large circle badge (80px diameter) with percentage text
   - Green (#10b981) for >80%
   - Yellow (#f59e0b) for 60-80%
@@ -484,9 +512,11 @@ graph TD
 - **Status Badge:** Small pill-shaped badge for document states (e.g., "Processing", "Filed")
 
 **States:**
+
 - Static (no interactivity)
 
 **Usage Guidelines:**
+
 - Confidence score badge always prominent in AI Analysis Card (top-right corner)
 - Color alone not sufficient—include percentage text for accessibility
 - Use semantic color meanings consistently (green=high confidence, not just "good")
@@ -498,15 +528,18 @@ graph TD
 **Purpose:** Display scanned document for user review
 
 **Variants:**
+
 - **PDF Embed:** Uses browser's native PDF viewer (iframe with src pointing to document)
 - **Image Display:** For JPEG/PNG scans, uses img tag with zoom controls
 
 **States:**
+
 - Loading (skeleton placeholder or spinner)
 - Loaded (displays document)
 - Error (placeholder image with "Preview unavailable" message)
 
 **Usage Guidelines:**
+
 - Minimum height 600px on desktop (allows reading without scroll for most documents)
 - Responsive scaling on mobile (100% width, height auto)
 - Provide fallback for browsers without native PDF support (link to download)
@@ -519,13 +552,16 @@ graph TD
 **Purpose:** Display focused interactions (rejection handler, confirmation dialogs)
 
 **Variants:**
+
 - **Standard:** Semi-transparent dark background (rgba(0,0,0,0.5)), centered white card
 
 **States:**
+
 - Open (visible with fade-in animation 200ms)
 - Closed (fade-out animation 200ms before unmounting)
 
 **Usage Guidelines:**
+
 - Close on Esc key press or click outside modal (unless destructive action requires explicit choice)
 - Trap focus within modal when open (Tab cycles through modal elements only)
 - Include visible close button (X icon top-right) in addition to Cancel action
@@ -538,16 +574,19 @@ graph TD
 **Purpose:** User selection from predefined options (folder paths)
 
 **Variants:**
+
 - **Standard:** Clickable field that opens dropdown menu below
 - **Searchable:** Includes filter input at top of dropdown (for large folder lists)
 
 **States:**
+
 - Closed (looks like text input with down arrow icon)
 - Open (dropdown menu visible, up arrow icon)
 - Focus (blue outline on trigger field)
 - Disabled (grayed out)
 
 **Usage Guidelines:**
+
 - Show most-recently-used folders at top of list (common selections first)
 - Include "Browse..." option at bottom to open folder picker (future feature)
 - Keyboard navigation: Arrow keys to move, Enter to select, Esc to close
@@ -560,13 +599,16 @@ graph TD
 **Purpose:** Indicate background processing or data loading
 
 **Variants:**
+
 - **Inline:** Small spinner (20px) for button loading states
 - **Full-page:** Large spinner (60px) centered on screen for page transitions
 
 **States:**
+
 - Spinning (continuous rotation animation)
 
 **Usage Guidelines:**
+
 - Always include aria-label for screen readers ("Processing document...")
 - Use sparingly—prefer optimistic UI where possible
 - Timeout after 30 seconds with error message if operation doesn't complete
@@ -580,6 +622,7 @@ graph TD
 **Brand Guidelines:** Minimal branding for MVP—focus is on functionality and document content, not marketing aesthetic. Professional, trustworthy, tool-oriented design language. Future versions may expand brand identity based on community feedback.
 
 **Core Brand Values Reflected in Design:**
+
 - **Transparency:** Open-source ethos → clean, readable code-inspired UI (monospace for technical details)
 - **Intelligence:** AI-powered → subtle "smart" visual cues (confidence score badges, reasoning explanations)
 - **Efficiency:** Speed-focused → minimal chrome, fast-loading components, keyboard shortcuts
@@ -587,15 +630,15 @@ graph TD
 
 ### Color Palette
 
-| Color Type | Hex Code | Usage |
-|------------|----------|-------|
-| Primary | #2563eb | Primary buttons, links, focus states, brand accents |
-| Secondary | #64748b | Secondary text, borders, inactive states |
-| Accent | #0891b2 | Highlights, info badges (optional—use sparingly) |
-| Success | #10b981 | High confidence scores (>80%), success confirmations, checkmarks |
-| Warning | #f59e0b | Medium confidence scores (60-80%), caution notices |
-| Error | #ef4444 | Low confidence scores (<60%), error messages, validation failures |
-| Neutral | #f8fafc (bg), #1e293b (text), #e2e8f0 (borders) | Backgrounds, body text, dividers, neutral UI chrome |
+| Color Type | Hex Code                                        | Usage                                                             |
+| ---------- | ----------------------------------------------- | ----------------------------------------------------------------- |
+| Primary    | #2563eb                                         | Primary buttons, links, focus states, brand accents               |
+| Secondary  | #64748b                                         | Secondary text, borders, inactive states                          |
+| Accent     | #0891b2                                         | Highlights, info badges (optional—use sparingly)                  |
+| Success    | #10b981                                         | High confidence scores (>80%), success confirmations, checkmarks  |
+| Warning    | #f59e0b                                         | Medium confidence scores (60-80%), caution notices                |
+| Error      | #ef4444                                         | Low confidence scores (<60%), error messages, validation failures |
+| Neutral    | #f8fafc (bg), #1e293b (text), #e2e8f0 (borders) | Backgrounds, body text, dividers, neutral UI chrome               |
 
 **Rationale:** Using Tailwind CSS default color palette (with slight tweaks) for accessibility-tested contrast ratios and developer familiarity. Colors have semantic meaning (not decorative)—green always means high confidence/success, red always means low confidence/error.
 
@@ -611,25 +654,27 @@ graph TD
 
 #### Type Scale
 
-| Element | Size | Weight | Line Height |
-|---------|------|--------|-------------|
-| H1 | 32px (2rem) | 700 (Bold) | 1.2 (38px) |
-| H2 | 24px (1.5rem) | 600 (Semibold) | 1.3 (31px) |
-| H3 | 20px (1.25rem) | 600 (Semibold) | 1.4 (28px) |
-| Body | 16px (1rem) | 400 (Regular) | 1.5 (24px) |
-| Small | 14px (0.875rem) | 400 (Regular) | 1.4 (20px) |
-| Button | 16px (1rem) | 500 (Medium) | 1 (16px) |
-| Label | 14px (0.875rem) | 500 (Medium) | 1.4 (20px) |
+| Element | Size            | Weight         | Line Height |
+| ------- | --------------- | -------------- | ----------- |
+| H1      | 32px (2rem)     | 700 (Bold)     | 1.2 (38px)  |
+| H2      | 24px (1.5rem)   | 600 (Semibold) | 1.3 (31px)  |
+| H3      | 20px (1.25rem)  | 600 (Semibold) | 1.4 (28px)  |
+| Body    | 16px (1rem)     | 400 (Regular)  | 1.5 (24px)  |
+| Small   | 14px (0.875rem) | 400 (Regular)  | 1.4 (20px)  |
+| Button  | 16px (1rem)     | 500 (Medium)   | 1 (16px)    |
+| Label   | 14px (0.875rem) | 500 (Medium)   | 1.4 (20px)  |
 
 **Rationale:** 16px base size for body text (WCAG recommendation for readability). 1.5 line-height for comfortable reading of multi-line content. Bold weights (600-700) reserved for headings and key UI elements to create clear hierarchy.
 
 ### Iconography
 
 **Icon Library:** Heroicons 2.0 (open-source, designed by Tailwind Labs)
+
 - Outline style (24×24px) for general UI icons
 - Solid style (20×20px) for badges and small indicators
 
 **Icon Usage:**
+
 - Check circle (success confirmations)
 - X circle (errors, close buttons)
 - Eye / Eye-slash (password visibility toggle)
@@ -640,6 +685,7 @@ graph TD
 - Lock closed (authentication/security)
 
 **Usage Guidelines:**
+
 - Icons always paired with text labels (not icon-only buttons, except where universally understood like X for close)
 - Consistent 24×24px size for toolbar/button icons, 20×20px for inline text icons
 - Use stroke-width: 2 for outline icons (Heroicons default)
@@ -652,6 +698,7 @@ graph TD
 **Container Max-Width:** 1280px (centered with auto margins on ultra-wide screens)
 
 **Spacing Scale:** 8px base unit (Tailwind default scale)
+
 - XS: 4px (0.25rem) — Tight spacing between related inline elements
 - SM: 8px (0.5rem) — Default gap between form elements
 - MD: 16px (1rem) — Card padding, section spacing
@@ -660,6 +707,7 @@ graph TD
 - 2XL: 48px (3rem) — Large visual breaks
 
 **Responsive Breakpoints:**
+
 - Mobile: 320px - 767px (single-column layout)
 - Tablet: 768px - 1023px (potentially 2-column with narrower sidebar)
 - Desktop: 1024px+ (full 2-column Document Review layout)
@@ -679,6 +727,7 @@ graph TD
 ### Key Requirements
 
 **Visual:**
+
 - **Color contrast ratios:** Minimum 4.5:1 for normal text, 3:1 for large text (18pt+) and UI components
   - All text on white background uses #1e293b (slate-900) for body, #0f172a (slate-950) for headings
   - Button text on colored backgrounds tested with WebAIM contrast checker
@@ -691,6 +740,7 @@ graph TD
   - Responsive layout handles text reflow at increased sizes
 
 **Interaction:**
+
 - **Keyboard navigation:** All functionality accessible without mouse
   - Tab/Shift+Tab to move between interactive elements
   - Enter to activate buttons/links
@@ -708,6 +758,7 @@ graph TD
   - Links in dense text have surrounding padding for tap accuracy
 
 **Content:**
+
 - **Alternative text:** All non-decorative images have meaningful alt text
   - Document previews: `alt="Scanned packing list document"`
   - Icons paired with text labels: `<span class="sr-only">Success</span>` for screen readers
@@ -724,17 +775,20 @@ graph TD
 ### Testing Strategy
 
 **Manual Testing:**
+
 - Keyboard-only navigation test (unplug mouse, complete full workflow)
 - Screen reader test using NVDA (Windows) or VoiceOver (Mac) on all key screens
 - Color blindness simulation using browser DevTools (Protanopia, Deuteranopia filters)
 - 200% zoom test in Chrome/Firefox (verify no horizontal scroll, readable content)
 
 **Automated Testing:**
+
 - Run axe DevTools or Lighthouse Accessibility audit on all pages (target 95+ score)
 - HTML validation (W3C validator) to catch missing alt text, improper ARIA usage
 - Contrast checker (WebAIM tool) for all text/background color combinations
 
 **User Testing:**
+
 - If possible, test with actual users who rely on assistive technology
 - Document any Level AA failures with mitigation plan (fix before launch or documented limitation)
 
@@ -746,18 +800,19 @@ graph TD
 
 ### Breakpoints
 
-| Breakpoint | Min Width | Max Width | Target Devices |
-|------------|-----------|-----------|----------------|
-| Mobile | 320px | 767px | Smartphones (iPhone SE, Pixel, Samsung Galaxy) |
-| Tablet | 768px | 1023px | iPads, Android tablets, small laptops in portrait |
-| Desktop | 1024px | 1439px | Standard laptops, desktops (13"-15" screens at 1920×1080 scaled) |
-| Wide | 1440px | - | Large desktops, 4K displays, ultra-wide monitors |
+| Breakpoint | Min Width | Max Width | Target Devices                                                   |
+| ---------- | --------- | --------- | ---------------------------------------------------------------- |
+| Mobile     | 320px     | 767px     | Smartphones (iPhone SE, Pixel, Samsung Galaxy)                   |
+| Tablet     | 768px     | 1023px    | iPads, Android tablets, small laptops in portrait                |
+| Desktop    | 1024px    | 1439px    | Standard laptops, desktops (13"-15" screens at 1920×1080 scaled) |
+| Wide       | 1440px    | -         | Large desktops, 4K displays, ultra-wide monitors                 |
 
 **Rationale:** Breakpoints align with common device classes. Mobile-first CSS approach with `min-width` media queries. Document preview needs minimum 768px width for usability—below that, stacks vertically.
 
 ### Adaptation Patterns
 
 **Layout Changes:**
+
 - **Mobile (320-767px):**
   - Single-column stack: Document preview (collapsible) → AI Analysis Card → Routing Recommendation → Action Buttons (full-width)
   - Document preview initially collapsed with "View Document" button to expand (saves screen space)
@@ -778,21 +833,25 @@ graph TD
   - Additional whitespace on sides (not stretching content to full screen width)
 
 **Navigation Changes:**
+
 - Mobile: "Log Out" becomes icon-only or moved to hamburger menu (future)
 - Tablet/Desktop: "Log Out" text link in header (always visible)
 
 **Content Priority:**
+
 - Mobile: Document preview collapsible (users can choose to view or trust AI analysis)
 - Tablet/Desktop: Document preview always visible (assumed primary validation method)
 - Confidence score badge stays prominent at all sizes (large on mobile, larger on desktop)
 
 **Interaction Changes:**
+
 - Mobile: Tap targets increased to 48×48px minimum (larger than desktop 44×44px)
 - Mobile: Filename field opens native keyboard automatically when editing
 - Desktop: Keyboard shortcuts emphasized (Enter to approve)
 - Mobile: Swipe gestures considered for future (swipe document preview to see next page)
 
 **Image/Asset Handling:**
+
 - Document previews: Serve different resolutions based on screen size
   - Mobile: 800px width max (thumbnail quality)
   - Tablet: 1200px width
@@ -841,6 +900,7 @@ graph TD
 - **Dropdown Slide Down:** Dropdown menu slides down from trigger element with opacity fade (Duration: 200ms, Easing: ease-out)
 
 **Reduced Motion Override:**
+
 ```css
 @media (prefers-reduced-motion: reduce) {
   * {
@@ -850,6 +910,7 @@ graph TD
   }
 }
 ```
+
 All animations reduced to near-instant when user has motion sensitivity preference enabled.
 
 ---
@@ -867,16 +928,19 @@ All animations reduced to near-instant when user has motion sensitivity preferen
 ### Design Strategies
 
 **Lazy Loading:**
+
 - Document preview loads only when visible (deferred until above-fold content renders)
 - Below-fold images (if any) use `loading="lazy"` attribute
 - JavaScript code-splitting: Load authentication module separately from document review module
 
 **Optimistic UI:**
+
 - Approval button immediately shows success state (checkmark, "Filing..." text) before file operation completes
 - If background operation fails, show error notification with retry option (user already has positive feedback, failure is exceptional case)
 - Reduces perceived latency—user can mentally move on to next task while system works
 
 **Asset Optimization:**
+
 - Compress document preview images (WebP format with JPEG fallback, quality 80%)
 - Inline critical CSS (<14KB) in HTML head to avoid render-blocking
 - Use system fonts (no web font download delay)
@@ -884,16 +948,19 @@ All animations reduced to near-instant when user has motion sensitivity preferen
 - SVG icons inlined or sprite-sheeted (no separate icon file requests)
 
 **Caching Strategy:**
+
 - Static assets (CSS, JS, icons) served with long cache headers (1 year) and versioned filenames
 - Document previews cached briefly (5 minutes) to allow back-button navigation without re-fetch
 - API responses (document metadata) cached in memory for session duration
 
 **Progressive Enhancement:**
+
 - Core functionality works without JavaScript (form submission via standard HTTP POST)
 - JavaScript enhances with optimistic UI, inline validation, animations
 - Document preview fallback: If browser can't render PDF, show "Download PDF" link
 
 **Performance Monitoring:**
+
 - Track Core Web Vitals (LCP <2.5s, FID <100ms, CLS <0.1)
 - Log slow document preview loads (>5s) for debugging
 - Monitor file operation success rate (target >99.5%)
@@ -934,5 +1001,5 @@ _(To be completed: If a UI/UX checklist exists in `.bmad-core/checklists/`, run 
 
 ---
 
-*UI/UX Specification created by Sally (UX Expert) using BMAD-METHOD™ framework*
-*Document version 1.0 | 2025-10-03*
+_UI/UX Specification created by Sally (UX Expert) using BMAD-METHOD™ framework_
+_Document version 1.0 | 2025-10-03_

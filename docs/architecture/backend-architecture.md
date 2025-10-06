@@ -3,6 +3,7 @@
 ## Service Architecture (Traditional Server)
 
 **Controller/Route Organization:**
+
 ```
 services/api/src/
 ├── index.ts                  # Express app entry point
@@ -33,6 +34,7 @@ services/api/src/
 ```
 
 **Controller Template:**
+
 ```typescript
 // services/api/src/controllers/documents.controller.ts
 import { Request, Response } from 'express';
@@ -83,12 +85,12 @@ export async function approveDocument(req: Request, res: Response) {
     status: 'filed',
     destination_path: destinationPath,
     user_action: 'approved',
-    user_id: req.user.id
+    user_id: req.user.id,
   });
 
   res.json({
     message: 'Document filed successfully',
-    destination: destinationPath
+    destination: destinationPath,
   });
 }
 ```
@@ -99,6 +101,7 @@ export async function approveDocument(req: Request, res: Response) {
 (Refer to Database Schema section above for SQL DDL)
 
 **Data Access Layer (Repository Pattern):**
+
 ```typescript
 // services/api/src/repositories/document.repo.ts
 import { pool } from '../utils/db';
@@ -106,10 +109,7 @@ import { Document, AnalysisResult } from '@ai-scanner/shared';
 
 export const documentRepo = {
   async findById(id: string): Promise<Document | null> {
-    const result = await pool.query(
-      'SELECT * FROM documents WHERE id = $1',
-      [id]
-    );
+    const result = await pool.query('SELECT * FROM documents WHERE id = $1', [id]);
     return result.rows[0] || null;
   },
 
@@ -142,11 +142,12 @@ export const documentRepo = {
        ORDER BY scan_timestamp ASC`
     );
     return result.rows;
-  }
+  },
 };
 ```
 
 **Database Connection Pool:**
+
 ```typescript
 // services/api/src/utils/db.ts
 import { Pool } from 'pg';
@@ -155,7 +156,7 @@ export const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   max: 20, // Maximum connections
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000
+  connectionTimeoutMillis: 2000,
 });
 
 pool.on('error', (err) => {
@@ -178,6 +179,7 @@ export async function checkDbHealth(): Promise<boolean> {
 ## Authentication and Authorization
 
 **Auth Flow:**
+
 ```mermaid
 sequenceDiagram
     participant User
@@ -208,6 +210,7 @@ sequenceDiagram
 ```
 
 **Middleware/Guards (JWT Validation):**
+
 ```typescript
 // services/api/src/middleware/auth.middleware.ts
 import jwt from 'jsonwebtoken';
@@ -220,7 +223,7 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({
-      error: { code: 'UNAUTHORIZED', message: 'Missing or invalid token' }
+      error: { code: 'UNAUTHORIZED', message: 'Missing or invalid token' },
     });
   }
 
@@ -233,11 +236,11 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
   } catch (err) {
     if (err.name === 'TokenExpiredError') {
       return res.status(401).json({
-        error: { code: 'TOKEN_EXPIRED', message: 'Token has expired' }
+        error: { code: 'TOKEN_EXPIRED', message: 'Token has expired' },
       });
     }
     return res.status(401).json({
-      error: { code: 'INVALID_TOKEN', message: 'Invalid token signature' }
+      error: { code: 'INVALID_TOKEN', message: 'Invalid token signature' },
     });
   }
 }
@@ -251,6 +254,7 @@ router.post('/api/documents/:id/approve', authMiddleware, documentsController.ap
 ```
 
 **Password Hashing (bcrypt):**
+
 ```typescript
 // services/api/src/controllers/auth.controller.ts
 import bcrypt from 'bcrypt';

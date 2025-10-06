@@ -80,6 +80,7 @@ CREATE TRIGGER update_documents_updated_at BEFORE UPDATE ON documents
 ```
 
 **Schema Design Notes:**
+
 - **JSONB for analysis_result:** Flexible schema for Gemini responses (field structure may evolve without migrations)
 - **Partial index on notified:** Optimizes email service query (`WHERE status='analyzed' AND notified=false`) by indexing only relevant rows
 - **ON DELETE CASCADE for processing_queue:** When document deleted, related queue entries auto-deleted (cleanup)
@@ -88,6 +89,7 @@ CREATE TRIGGER update_documents_updated_at BEFORE UPDATE ON documents
 - **CHECK constraints:** Enforce valid enum values at database level (redundant with app validation for data integrity)
 
 **Migration Strategy:**
+
 - Use `node-pg-migrate` library for version-controlled schema changes
 - Initial migration creates tables above
 - Future migrations handled via numbered migration files (`001_initial_schema.sql`, `002_add_columns.sql`)

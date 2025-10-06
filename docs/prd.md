@@ -23,13 +23,13 @@
 
 Organizations with structured filing requirements (ISO QMS, HIPAA medical records, financial compliance) face a daily productivity drain from manual document routing. Each scanned document requires 2-5 minutes of manual work: identifying document type, extracting key information (vendor, PO number, dates), navigating complex folder structures, and applying naming conventions. This creates 30+ minutes of non-value-add work daily for even modest 10-document volumes, while introducing compliance risks from human filing errors.
 
-**ai.scanner** addresses this through an AI-powered reasoning engine that doesn't just classify documents—it *reasons* about them. By consulting external data sources (PO logs, vendor lists, folder structures), the system fills information gaps and makes intelligent routing recommendations with confidence scores. A batch processing UX (15-second idle trigger) provides single-email summaries with web-based review interfaces, allowing users to approve recommendations in 10-15 seconds per document. Built for Docker Compose deployment with .env configuration, the system targets small-to-medium businesses (QMS manufacturing, medical practices, legal/accounting firms) who need intelligent document management without enterprise DMS costs.
+**ai.scanner** addresses this through an AI-powered reasoning engine that doesn't just classify documents—it _reasons_ about them. By consulting external data sources (PO logs, vendor lists, folder structures), the system fills information gaps and makes intelligent routing recommendations with confidence scores. A batch processing UX (15-second idle trigger) provides single-email summaries with web-based review interfaces, allowing users to approve recommendations in 10-15 seconds per document. Built for Docker Compose deployment with .env configuration, the system targets small-to-medium businesses (QMS manufacturing, medical practices, legal/accounting firms) who need intelligent document management without enterprise DMS costs.
 
 ### Change Log
 
-| Date | Version | Description | Author |
-|------|---------|-------------|---------|
-| 2025-10-03 | 1.0 | Initial PRD creation | John (PM Agent) |
+| Date       | Version | Description          | Author          |
+| ---------- | ------- | -------------------- | --------------- |
+| 2025-10-03 | 1.0     | Initial PRD creation | John (PM Agent) |
 
 ---
 
@@ -204,6 +204,7 @@ ai.scanner/
 Each service runs in separate container, communicates via database and lightweight queue. Services can restart independently but share deployment lifecycle.
 
 **Key Technology Choice:** **Node.js backend** (Node v24.5.0) for all services. Reasoning:
+
 - Fast async I/O perfect for file watching, API calls, and concurrent request handling
 - Lightweight and fast cold start (ideal for containerized services)
 - Rich ecosystem: Express (web), simple queue libraries, pdf-parse/pdf-lib (PDF handling), sharp (image processing)
@@ -224,6 +225,7 @@ Each service runs in separate container, communicates via database and lightweig
 - **No load testing:** Manual verification of 100 docs/day throughput sufficient for MVP
 
 **Testing tools:**
+
 - Jest or Vitest for JavaScript unit/integration tests
 - Manual testing checklist for deployment validation
 - Docker test environment matching production setup
@@ -267,22 +269,28 @@ Each service runs in separate container, communicates via database and lightweig
 ## Epic List
 
 ### Epic 1: Foundation & Authentication Infrastructure
-*Establish project foundation with Docker Compose setup, PostgreSQL database, basic authentication system, and initial health check endpoint to validate deployment.*
+
+_Establish project foundation with Docker Compose setup, PostgreSQL database, basic authentication system, and initial health check endpoint to validate deployment._
 
 ### Epic 2: File Monitoring & Queue System
-*Implement polling-based file watcher service that detects new documents in scan folder and queues them for processing with lightweight queue infrastructure.*
+
+_Implement polling-based file watcher service that detects new documents in scan folder and queues them for processing with lightweight queue infrastructure._
 
 ### Epic 3: AI Analysis Engine
-*Build Gemini Vision integration with document analysis worker that classifies documents, extracts key information, consults external data sources, and generates routing recommendations with confidence scores.*
+
+_Build Gemini Vision integration with document analysis worker that classifies documents, extracts key information, consults external data sources, and generates routing recommendations with confidence scores._
 
 ### Epic 4: Email Notification System
-*Create batch email service with 15-second idle trigger that sends HTML summary emails with document thumbnails, AI recommendations, and review links.*
+
+_Create batch email service with 15-second idle trigger that sends HTML summary emails with document thumbnails, AI recommendations, and review links._
 
 ### Epic 5: Web Review Interface & Approval Workflow
-*Develop web-based document review page with authentication, document preview, editable routing fields, and approval/rejection workflow that executes file operations.*
+
+_Develop web-based document review page with authentication, document preview, editable routing fields, and approval/rejection workflow that executes file operations._
 
 ### Epic 6: Deployment & Documentation
-*Finalize Docker deployment configuration, create comprehensive setup documentation, provide example data sources, and validate end-to-end workflows across platforms.*
+
+_Finalize Docker deployment configuration, create comprehensive setup documentation, provide example data sources, and validate end-to-end workflows across platforms._
 
 ---
 
@@ -559,7 +567,7 @@ Each service runs in separate container, communicates via database and lightweig
 2. Response validator checks required fields present: document_type, confidence_score, recommended_folder_path, recommended_filename
 3. Confidence score validated as number between 0-100, defaults to 50 if invalid
 4. Recommended folder path validated against loaded folder structure, fallback to "/uncategorized" if invalid
-5. Recommended filename sanitized: remove invalid characters (/, \, :, *, ?, ", <, >, |), replace spaces with underscores, ensure extension preserved
+5. Recommended filename sanitized: remove invalid characters (/, \, :, \*, ?, ", <, >, |), replace spaces with underscores, ensure extension preserved
 6. Extracted fields stored as JSONB in documents.analysis_result column
 7. If validation fails, log WARNING with validation errors and use fallback values (don't fail entire job)
 8. Reasoning text truncated to 500 characters if exceeds limit
@@ -640,7 +648,7 @@ Each service runs in separate container, communicates via database and lightweig
 1. For each document in batch, service generates thumbnail image from first page (200px width, maintain aspect ratio)
 2. PDF documents: convert first page to image using pdf-to-img or similar, resize to thumbnail
 3. Image documents: load original image, resize to thumbnail using sharp library
-4. Thumbnails saved to temporary directory with filename: {document_id}_thumb.png
+4. Thumbnails saved to temporary directory with filename: {document_id}\_thumb.png
 5. Thumbnail generation timeout: 5 seconds per document, on failure use placeholder image (generic document icon)
 6. Service includes fallback for corrupted/unreadable files: log WARNING and use placeholder
 7. Thumbnails embedded in email as base64 data URIs (avoid external image hosting for MVP)
@@ -817,7 +825,7 @@ Each service runs in separate container, communicates via database and lightweig
 1. Approval form includes editable fields: Destination Folder (text input or dropdown with folder structure), Filename (text input with extension locked)
 2. Destination Folder field pre-filled with AI recommendation, includes autocomplete/suggestions from loaded folder structure
 3. Filename field pre-filled with AI recommendation, extension shown as read-only suffix or locked part of input
-4. Filename validation: client-side check for invalid characters (/, \, :, *, ?, ", <, >, |), show error if present
+4. Filename validation: client-side check for invalid characters (/, \, :, \*, ?, ", <, >, |), show error if present
 5. Character counter shows filename length (warn if >255 characters—file system limit)
 6. Form includes action buttons: "Approve & File" (primary, green), "Reject" (secondary, gray), "Cancel" (tertiary, text link)
 7. Folder field includes "Browse" button opening folder tree picker modal (MVP: simple dropdown, post-MVP: tree view)
@@ -1074,17 +1082,17 @@ Each service runs in separate container, communicates via database and lightweig
 
 ### Category Analysis Table
 
-| Category                         | Status  | Critical Issues                          |
-| -------------------------------- | ------- | ---------------------------------------- |
-| 1. Problem Definition & Context  | PASS    | None                                     |
-| 2. MVP Scope Definition          | PASS    | None                                     |
-| 3. User Experience Requirements  | PASS    | None                                     |
-| 4. Functional Requirements       | PASS    | None                                     |
-| 5. Non-Functional Requirements   | PASS    | None                                     |
-| 6. Epic & Story Structure        | PASS    | None                                     |
-| 7. Technical Guidance            | PASS    | None                                     |
-| 8. Cross-Functional Requirements | PASS    | None                                     |
-| 9. Clarity & Communication       | PASS    | Document now written to file             |
+| Category                         | Status | Critical Issues              |
+| -------------------------------- | ------ | ---------------------------- |
+| 1. Problem Definition & Context  | PASS   | None                         |
+| 2. MVP Scope Definition          | PASS   | None                         |
+| 3. User Experience Requirements  | PASS   | None                         |
+| 4. Functional Requirements       | PASS   | None                         |
+| 5. Non-Functional Requirements   | PASS   | None                         |
+| 6. Epic & Story Structure        | PASS   | None                         |
+| 7. Technical Guidance            | PASS   | None                         |
+| 8. Cross-Functional Requirements | PASS   | None                         |
+| 9. Clarity & Communication       | PASS   | Document now written to file |
 
 ### Top Issues by Priority
 
@@ -1093,9 +1101,11 @@ Each service runs in separate container, communicates via database and lightweig
 **HIGH:** None (document has been written to file)
 
 **MEDIUM:**
+
 - Consider adding architectural diagrams (can be added during architecture phase)
 
 **LOW:**
+
 - Could add more specific examples in some acceptance criteria
 - Could add estimated story points (not critical for AI agent execution)
 
@@ -1211,6 +1221,7 @@ Each service runs in separate container, communicates via database and lightweig
 **Clarity of technical constraints:** Excellent - Node.js v24.5.0 specified, all major libraries identified, architecture pattern clear.
 
 **Identified technical risks:**
+
 1. Gemini API rate limiting - mitigation documented
 2. Large document processing - mitigation documented
 3. Email deliverability - acknowledged
@@ -1233,6 +1244,7 @@ Each service runs in separate container, communicates via database and lightweig
 The PRD and epics are comprehensive, properly structured, and ready for architectural design. The architect has everything needed to design the technical implementation.
 
 **Quality indicators:**
+
 - All 9 checklist categories pass
 - 39 fully-detailed user stories with acceptance criteria
 - Clear technical direction without over-specification
@@ -1255,4 +1267,4 @@ Create comprehensive technical architecture for ai.scanner based on docs/prd.md.
 
 ---
 
-*PRD v1.0 - Created 2025-10-03 using BMAD-METHOD™ framework*
+_PRD v1.0 - Created 2025-10-03 using BMAD-METHOD™ framework_

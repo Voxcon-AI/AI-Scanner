@@ -24,18 +24,19 @@
 
 ## Naming Conventions
 
-| Element | Frontend | Backend | Example |
-|---------|----------|---------|---------|
-| Components | PascalCase | - | `Button.js`, `DocumentPreview.js` |
-| Hooks | camelCase with 'use' prefix | - | `useAuth.js`, `useRouter.js` |
-| API Routes | - | kebab-case | `/api/documents/:id`, `/auth/login` |
-| Database Tables | - | snake_case | `documents`, `processing_queue`, `batches` |
-| TypeScript Interfaces | PascalCase | PascalCase | `Document`, `AnalysisResult`, `QueueJob` |
-| Functions | camelCase | camelCase | `approveDocument()`, `sanitizeFilename()` |
-| Constants | SCREAMING_SNAKE_CASE | SCREAMING_SNAKE_CASE | `MAX_RETRY_COUNT`, `DEFAULT_POLL_INTERVAL` |
-| Environment Variables | SCREAMING_SNAKE_CASE | SCREAMING_SNAKE_CASE | `GEMINI_API_KEY`, `SMTP_HOST` |
+| Element               | Frontend                    | Backend              | Example                                    |
+| --------------------- | --------------------------- | -------------------- | ------------------------------------------ |
+| Components            | PascalCase                  | -                    | `Button.js`, `DocumentPreview.js`          |
+| Hooks                 | camelCase with 'use' prefix | -                    | `useAuth.js`, `useRouter.js`               |
+| API Routes            | -                           | kebab-case           | `/api/documents/:id`, `/auth/login`        |
+| Database Tables       | -                           | snake_case           | `documents`, `processing_queue`, `batches` |
+| TypeScript Interfaces | PascalCase                  | PascalCase           | `Document`, `AnalysisResult`, `QueueJob`   |
+| Functions             | camelCase                   | camelCase            | `approveDocument()`, `sanitizeFilename()`  |
+| Constants             | SCREAMING_SNAKE_CASE        | SCREAMING_SNAKE_CASE | `MAX_RETRY_COUNT`, `DEFAULT_POLL_INTERVAL` |
+| Environment Variables | SCREAMING_SNAKE_CASE        | SCREAMING_SNAKE_CASE | `GEMINI_API_KEY`, `SMTP_HOST`              |
 
 **Additional Conventions:**
+
 - **File Names:** Match primary export name (`Button.js` exports `Button` class, `document.repo.ts` exports `documentRepo`)
 - **Test Files:** Same name as source file with `.test.` suffix (`Button.test.js`, `document.repo.test.ts`)
 - **Async Functions:** Prefix with `async` keyword, return Promises (never mix callbacks and Promises)

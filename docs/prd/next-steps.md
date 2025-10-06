@@ -10,4 +10,4 @@ Create comprehensive technical architecture for ai.scanner based on docs/prd.md.
 
 ---
 
-*PRD v1.0 - Created 2025-10-03 using BMAD-METHOD™ framework*
+_PRD v1.0 - Created 2025-10-03 using BMAD-METHOD™ framework_

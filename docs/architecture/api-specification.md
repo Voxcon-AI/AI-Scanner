@@ -341,6 +341,7 @@ paths:
 ```
 
 **Authentication Flow:**
+
 1. User POSTs credentials to `/auth/login`
 2. Server validates against bcrypt hash in database
 3. Server generates JWT with RS256 signing (private key from env)
@@ -351,6 +352,7 @@ paths:
 
 **Error Response Format (Standardized):**
 All errors return JSON with structure:
+
 ```json
 {
   "error": {

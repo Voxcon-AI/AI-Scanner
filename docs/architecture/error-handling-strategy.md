@@ -108,7 +108,7 @@ async function handleApprove() {
   } catch (err) {
     if (err.code === 'FILE_OPERATION_FAILED') {
       showError('Unable to file document. Please check folder permissions and try again.', {
-        retry: () => handleApprove() // Retry button
+        retry: () => handleApprove(), // Retry button
       });
     } else {
       showError('An unexpected error occurred. Please try again later.');
@@ -130,14 +130,17 @@ export function errorHandler(err: Error, req: Request, res: Response, next: Next
   const requestId = uuidv4();
 
   // Log error with full context
-  logger.error({
-    err,
-    requestId,
-    method: req.method,
-    path: req.path,
-    body: req.body,
-    user: req.user?.id
-  }, 'Request error');
+  logger.error(
+    {
+      err,
+      requestId,
+      method: req.method,
+      path: req.path,
+      body: req.body,
+      user: req.user?.id,
+    },
+    'Request error'
+  );
 
   // Map errors to status codes
   let statusCode = 500;
@@ -161,8 +164,8 @@ export function errorHandler(err: Error, req: Request, res: Response, next: Next
       message: err.message,
       details: err.details || {},
       timestamp: new Date().toISOString(),
-      requestId
-    }
+      requestId,
+    },
   });
 }
 
@@ -199,7 +202,7 @@ export async function moveFile(source: string, destFolder: string, filename: str
     throw new FileOperationError('Unable to move file: ' + err.message, {
       source,
       destination: path.join(destFolder, filename),
-      errno: err.errno
+      errno: err.errno,
     });
   }
 }

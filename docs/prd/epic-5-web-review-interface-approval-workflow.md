@@ -89,7 +89,7 @@
 1. Approval form includes editable fields: Destination Folder (text input or dropdown with folder structure), Filename (text input with extension locked)
 2. Destination Folder field pre-filled with AI recommendation, includes autocomplete/suggestions from loaded folder structure
 3. Filename field pre-filled with AI recommendation, extension shown as read-only suffix or locked part of input
-4. Filename validation: client-side check for invalid characters (/, \, :, *, ?, ", <, >, |), show error if present
+4. Filename validation: client-side check for invalid characters (/, \, :, \*, ?, ", <, >, |), show error if present
 5. Character counter shows filename length (warn if >255 characters—file system limit)
 6. Form includes action buttons: "Approve & File" (primary, green), "Reject" (secondary, gray), "Cancel" (tertiary, text link)
 7. Folder field includes "Browse" button opening folder tree picker modal (MVP: simple dropdown, post-MVP: tree view)

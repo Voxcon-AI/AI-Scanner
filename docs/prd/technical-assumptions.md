@@ -37,6 +37,7 @@ ai.scanner/
 Each service runs in separate container, communicates via database and lightweight queue. Services can restart independently but share deployment lifecycle.
 
 **Key Technology Choice:** **Node.js backend** (Node v24.5.0) for all services. Reasoning:
+
 - Fast async I/O perfect for file watching, API calls, and concurrent request handling
 - Lightweight and fast cold start (ideal for containerized services)
 - Rich ecosystem: Express (web), simple queue libraries, pdf-parse/pdf-lib (PDF handling), sharp (image processing)
@@ -57,6 +58,7 @@ Each service runs in separate container, communicates via database and lightweig
 - **No load testing:** Manual verification of 100 docs/day throughput sufficient for MVP
 
 **Testing tools:**
+
 - Jest or Vitest for JavaScript unit/integration tests
 - Manual testing checklist for deployment validation
 - Docker test environment matching production setup

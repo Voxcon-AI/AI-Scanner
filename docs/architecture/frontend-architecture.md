@@ -3,6 +3,7 @@
 ## Component Architecture
 
 **Component Organization:**
+
 ```
 frontend/
 ├── index.html               # Main entry point (SPA shell)
@@ -33,6 +34,7 @@ frontend/
 ```
 
 **Component Template (Button.js Example):**
+
 ```typescript
 // frontend/js/components/Button.js
 export class Button {
@@ -62,7 +64,7 @@ export class Button {
 const approveBtn = new Button({
   text: 'Approve & File',
   variant: 'primary',
-  onClick: handleApprove
+  onClick: handleApprove,
 });
 document.querySelector('#actions').appendChild(approveBtn.render());
 ```
@@ -70,6 +72,7 @@ document.querySelector('#actions').appendChild(approveBtn.render());
 ## State Management Architecture
 
 **State Structure:**
+
 ```typescript
 // No global state management library (Redux/Zustand) for MVP
 // Each page manages its own local state via closures and DOM data attributes
@@ -101,6 +104,7 @@ function ReviewPage(documentId) {
 ```
 
 **State Management Patterns:**
+
 - **Page-Level State:** Each page (LoginPage, ReviewPage) manages own state via closures (no global store)
 - **URL as State:** Document ID and review token stored in URL query params (bookmarkable, shareable links)
 - **LocalStorage for Auth:** JWT token persisted in localStorage for session continuity across page reloads
@@ -111,13 +115,14 @@ function ReviewPage(documentId) {
 ## Routing Architecture
 
 **Route Organization:**
+
 ```javascript
 // frontend/js/utils/router.js
 const routes = {
-  '/': LoginPage,           // Default route redirects to login if not authenticated
+  '/': LoginPage, // Default route redirects to login if not authenticated
   '/login': LoginPage,
   '/review/:documentId': ReviewPage,
-  '/success': SuccessPage
+  '/success': SuccessPage,
 };
 
 function router() {
@@ -148,6 +153,7 @@ document.addEventListener('DOMContentLoaded', router);
 ```
 
 **Protected Route Pattern:**
+
 ```javascript
 // frontend/js/utils/auth.js
 export function isAuthenticated() {
@@ -177,6 +183,7 @@ export function ReviewPage(params) {
 ## Frontend Services Layer
 
 **API Client Setup:**
+
 ```typescript
 // frontend/js/api/client.js
 const API_BASE_URL = window.location.origin; // Same-origin (no CORS)
@@ -186,7 +193,7 @@ export async function apiFetch(endpoint, options = {}) {
 
   const headers = {
     'Content-Type': 'application/json',
-    ...options.headers
+    ...options.headers,
   };
 
   if (token) {
@@ -195,7 +202,7 @@ export async function apiFetch(endpoint, options = {}) {
 
   const response = await fetch(API_BASE_URL + endpoint, {
     ...options,
-    headers
+    headers,
   });
 
   if (response.status === 401) {
@@ -215,6 +222,7 @@ export async function apiFetch(endpoint, options = {}) {
 ```
 
 **Service Example (Document Service):**
+
 ```typescript
 // frontend/js/api/documents.js
 import { apiFetch } from './client.js';
@@ -228,7 +236,7 @@ export async function approveDocument(documentId, destination) {
   const endpoint = `/api/documents/${documentId}/approve`;
   return apiFetch(endpoint, {
     method: 'POST',
-    body: JSON.stringify(destination)
+    body: JSON.stringify(destination),
   });
 }
 
@@ -236,7 +244,7 @@ export async function rejectDocument(documentId, reason) {
   const endpoint = `/api/documents/${documentId}/reject`;
   return apiFetch(endpoint, {
     method: 'POST',
-    body: JSON.stringify({ reason })
+    body: JSON.stringify({ reason }),
   });
 }
 
@@ -246,7 +254,7 @@ import { getDocument, approveDocument } from './api/documents.js';
 const doc = await getDocument(documentId, reviewToken);
 await approveDocument(documentId, {
   destination_folder: '/Quality/Suppliers/AcmeCorp',
-  filename: 'PO-12345.pdf'
+  filename: 'PO-12345.pdf',
 });
 ```
 

@@ -5,6 +5,7 @@
 **Purpose:** Represents a scanned document throughout its lifecycle from detection through AI analysis to user approval and filing.
 
 **Key Attributes:**
+
 - `id` (UUID): Unique identifier for document, generated on detection
 - `filename` (string): Original scanned filename (e.g., `invoice_20251003_143052.pdf`)
 - `scan_path` (string): Absolute path to file in scan folder at detection time
@@ -18,6 +19,7 @@
 - `updated_at` (timestamp): Last modification time
 
 **Relationships:**
+
 - BelongsTo User (via `user_id`) - one document reviewed by one user
 - HasMany ProcessingQueue entries (one document can have multiple retry attempts)
 
@@ -65,6 +67,7 @@ interface AnalysisResult {
 **Purpose:** Represents authenticated users who can review and approve document routing recommendations.
 
 **Key Attributes:**
+
 - `id` (UUID): Unique user identifier
 - `username` (string, unique): Login username (email format optional for MVP)
 - `password_hash` (string): bcrypt hash of password (never store plaintext)
@@ -72,6 +75,7 @@ interface AnalysisResult {
 - `updated_at` (timestamp): Last modification time
 
 **Relationships:**
+
 - HasMany Documents (via `user_id`) - one user can review multiple documents
 
 ### TypeScript Interface
@@ -100,6 +104,7 @@ interface UserDTO {
 **Purpose:** Tracks document analysis jobs in Redis queue with retry state and error handling.
 
 **Key Attributes:**
+
 - `id` (UUID): Unique queue entry identifier
 - `document_id` (UUID): Foreign key to Document being processed
 - `status` (enum): Queue state—`pending`, `processing`, `completed`, `failed`
@@ -109,6 +114,7 @@ interface UserDTO {
 - `completed_at` (timestamp, nullable): Job completion time
 
 **Relationships:**
+
 - BelongsTo Document (via `document_id`) - each queue entry processes one document
 
 ### TypeScript Interface
@@ -141,6 +147,7 @@ interface QueueJob {
 **Purpose:** Groups multiple analyzed documents for batch email notifications (15-second idle trigger).
 
 **Key Attributes:**
+
 - `id` (UUID): Unique batch identifier
 - `document_ids` (UUID[]): Array of document IDs included in this batch
 - `created_at` (timestamp): When first document was analyzed (batch trigger started)
@@ -150,6 +157,7 @@ interface QueueJob {
 - `error_message` (string, nullable): SMTP error details if send failed
 
 **Relationships:**
+
 - HasMany Documents (via `document_ids` array) - one batch contains multiple documents
 
 ### TypeScript Interface

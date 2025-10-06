@@ -3,12 +3,14 @@
 ## Deployment Strategy
 
 **Frontend Deployment:**
+
 - **Platform:** Static files served by Express API (same container, no separate CDN for MVP)
 - **Build Command:** `npm run build:frontend` (bundles JS/CSS with esbuild, outputs to `frontend/dist/`)
 - **Output Directory:** `frontend/dist/` (served via `express.static('frontend/dist')`)
 - **CDN/Edge:** None for MVP (future: Cloudflare CDN for global users)
 
 **Backend Deployment:**
+
 - **Platform:** Docker Compose on self-hosted Linux VM (AWS EC2, DigitalOcean, Azure VM, or on-premises server)
 - **Build Command:** `docker-compose build` (builds Docker images for all services)
 - **Deployment Method:** `docker-compose up -d` (detached mode, services run in background)
@@ -61,6 +63,7 @@ jobs:
 ```
 
 **Deployment Workflow:**
+
 1. Developer pushes code to `dev` branch
 2. GitHub Actions runs tests and linter
 3. If tests pass, merge to `main` branch
@@ -71,18 +74,20 @@ jobs:
 
 ## Environments
 
-| Environment | Frontend URL | Backend URL | Purpose |
-|-------------|-------------|-------------|---------|
-| Development | http://localhost:3000 | http://localhost:3000 | Local development (hot reload, debug logs) |
-| Staging | https://staging.ai-scanner.local | https://staging.ai-scanner.local | Pre-production testing (production-like config, test data) |
-| Production | https://ai-scanner.local | https://ai-scanner.local | Live environment (real documents, on-premises deployment) |
+| Environment | Frontend URL                     | Backend URL                      | Purpose                                                    |
+| ----------- | -------------------------------- | -------------------------------- | ---------------------------------------------------------- |
+| Development | http://localhost:3000            | http://localhost:3000            | Local development (hot reload, debug logs)                 |
+| Staging     | https://staging.ai-scanner.local | https://staging.ai-scanner.local | Pre-production testing (production-like config, test data) |
+| Production  | https://ai-scanner.local         | https://ai-scanner.local         | Live environment (real documents, on-premises deployment)  |
 
 **Environment-Specific Configuration:**
+
 - **Development:** Uses `.env.development` (debug logs, hot reload, sample data)
 - **Staging:** Uses `.env.staging` (production Docker images, test SMTP server, staging database)
 - **Production:** Uses `.env.production` (production SMTP, real folder mounts, optimized logging)
 
 **Deployment Hosts:**
+
 - Development: Developer's laptop (Docker Desktop)
 - Staging: Cloud VM or on-premises test server (e.g., AWS EC2 t3.medium, 2 vCPU, 4GB RAM)
 - Production: On-premises server or cloud VM in customer's region (e.g., DigitalOcean Droplet, 4GB RAM, 80GB SSD)

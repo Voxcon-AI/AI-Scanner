@@ -9,6 +9,7 @@ ai.scanner implements a **containerized microservices architecture** deployed vi
 **Platform:** Docker Compose on self-hosted infrastructure (Linux/Windows/macOS)
 
 **Key Services:**
+
 - **Container Orchestration:** Docker Compose (v2.0+)
 - **Database:** PostgreSQL 16 (persistent storage for document metadata, user auth, queue state)
 - **Queue/Cache:** Redis 7 (BullMQ Lite job queue, session caching, rate limiting)
@@ -27,6 +28,7 @@ ai.scanner implements a **containerized microservices architecture** deployed vi
 **Monorepo Tool:** npm workspaces (native to Node.js, no additional tooling required)
 
 **Package Organization:**
+
 ```
 ai.scanner/
 ├── services/               # Backend service packages

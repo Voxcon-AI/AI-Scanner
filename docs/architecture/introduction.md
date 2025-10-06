@@ -12,8 +12,8 @@ This is a net-new greenfield implementation with no existing codebase constraint
 
 ## Change Log
 
-| Date | Version | Description | Author |
-|------|---------|-------------|--------|
-| 2025-10-03 | 1.0 | Initial architecture document | Winston (Architect) |
+| Date       | Version | Description                   | Author              |
+| ---------- | ------- | ----------------------------- | ------------------- |
+| 2025-10-03 | 1.0     | Initial architecture document | Winston (Architect) |
 
 ---

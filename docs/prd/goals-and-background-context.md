@@ -14,12 +14,12 @@
 
 Organizations with structured filing requirements (ISO QMS, HIPAA medical records, financial compliance) face a daily productivity drain from manual document routing. Each scanned document requires 2-5 minutes of manual work: identifying document type, extracting key information (vendor, PO number, dates), navigating complex folder structures, and applying naming conventions. This creates 30+ minutes of non-value-add work daily for even modest 10-document volumes, while introducing compliance risks from human filing errors.
 
-**ai.scanner** addresses this through an AI-powered reasoning engine that doesn't just classify documents—it *reasons* about them. By consulting external data sources (PO logs, vendor lists, folder structures), the system fills information gaps and makes intelligent routing recommendations with confidence scores. A batch processing UX (15-second idle trigger) provides single-email summaries with web-based review interfaces, allowing users to approve recommendations in 10-15 seconds per document. Built for Docker Compose deployment with .env configuration, the system targets small-to-medium businesses (QMS manufacturing, medical practices, legal/accounting firms) who need intelligent document management without enterprise DMS costs.
+**ai.scanner** addresses this through an AI-powered reasoning engine that doesn't just classify documents—it _reasons_ about them. By consulting external data sources (PO logs, vendor lists, folder structures), the system fills information gaps and makes intelligent routing recommendations with confidence scores. A batch processing UX (15-second idle trigger) provides single-email summaries with web-based review interfaces, allowing users to approve recommendations in 10-15 seconds per document. Built for Docker Compose deployment with .env configuration, the system targets small-to-medium businesses (QMS manufacturing, medical practices, legal/accounting firms) who need intelligent document management without enterprise DMS costs.
 
 ## Change Log
 
-| Date | Version | Description | Author |
-|------|---------|-------------|---------|
-| 2025-10-03 | 1.0 | Initial PRD creation | John (PM Agent) |
+| Date       | Version | Description          | Author          |
+| ---------- | ------- | -------------------- | --------------- |
+| 2025-10-03 | 1.0     | Initial PRD creation | John (PM Agent) |
 
 ---

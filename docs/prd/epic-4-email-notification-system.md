@@ -32,7 +32,7 @@
 1. For each document in batch, service generates thumbnail image from first page (200px width, maintain aspect ratio)
 2. PDF documents: convert first page to image using pdf-to-img or similar, resize to thumbnail
 3. Image documents: load original image, resize to thumbnail using sharp library
-4. Thumbnails saved to temporary directory with filename: {document_id}_thumb.png
+4. Thumbnails saved to temporary directory with filename: {document_id}\_thumb.png
 5. Thumbnail generation timeout: 5 seconds per document, on failure use placeholder image (generic document icon)
 6. Service includes fallback for corrupted/unreadable files: log WARNING and use placeholder
 7. Thumbnails embedded in email as base64 data URIs (avoid external image hosting for MVP)

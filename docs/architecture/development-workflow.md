@@ -3,6 +3,7 @@
 ## Local Development Setup
 
 **Prerequisites:**
+
 ```bash
 # Install required tools
 # Node.js v24.5.0 (use nvm for version management)
@@ -22,6 +23,7 @@ docker-compose --version
 ```
 
 **Initial Setup:**
+
 ```bash
 # Clone repository
 git clone https://github.com/yourusername/ai.scanner.git
@@ -58,6 +60,7 @@ cd ../..
 ```
 
 **Development Commands:**
+
 ```bash
 # Start all services in development mode (with hot reload)
 npm run dev
@@ -143,6 +146,7 @@ TZ=UTC  # Timezone for timestamps
 ```
 
 **Notes:**
+
 - Generate JWT keys with `./scripts/generate-keys.sh` (uses `openssl` to create RSA key pair)
 - SMTP password for Gmail requires "App Password" (not regular password)—enable 2FA then generate at https://myaccount.google.com/apppasswords
 - Folder paths use host file system paths (Docker volumes mount these into containers)

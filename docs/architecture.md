@@ -21,9 +21,9 @@ This is a net-new greenfield implementation with no existing codebase constraint
 
 ### Change Log
 
-| Date | Version | Description | Author |
-|------|---------|-------------|--------|
-| 2025-10-03 | 1.0 | Initial architecture document | Winston (Architect) |
+| Date       | Version | Description                   | Author              |
+| ---------- | ------- | ----------------------------- | ------------------- |
+| 2025-10-03 | 1.0     | Initial architecture document | Winston (Architect) |
 
 ---
 
@@ -38,6 +38,7 @@ ai.scanner implements a **containerized microservices architecture** deployed vi
 **Platform:** Docker Compose on self-hosted infrastructure (Linux/Windows/macOS)
 
 **Key Services:**
+
 - **Container Orchestration:** Docker Compose (v2.0+)
 - **Database:** PostgreSQL 16 (persistent storage for document metadata, user auth, queue state)
 - **Queue/Cache:** Redis 7 (BullMQ Lite job queue, session caching, rate limiting)
@@ -56,6 +57,7 @@ ai.scanner implements a **containerized microservices architecture** deployed vi
 **Monorepo Tool:** npm workspaces (native to Node.js, no additional tooling required)
 
 **Package Organization:**
+
 ```
 ai.scanner/
 ├── services/               # Backend service packages
@@ -169,31 +171,32 @@ graph TB
 
 ### Technology Stack Table
 
-| Category | Technology | Version | Purpose | Rationale |
-|----------|-----------|---------|---------|-----------|
-| Frontend Language | TypeScript | 5.3+ | Type-safe frontend code | Shares type definitions with backend (data models in `shared/`), catches errors at compile time, excellent IDE support |
-| Frontend Framework | Vanilla JavaScript | ES2022 | Lightweight UI with minimal dependencies | No framework overhead (React/Vue add 100KB+), faster load times (<2s on 3G), simple debugging, aligns with "invisible UI" goal |
-| UI Component Library | Custom Components | N/A | Minimal component set (8 core) | PRD specifies custom design system, avoids Material-UI bloat (500KB+), full control over accessibility and branding |
-| State Management | None (DOM-based) | N/A | Direct DOM manipulation for simple UI | No global state needed—each review page is isolated session, reduces complexity vs Redux/Zustand |
-| Backend Language | TypeScript (transpiled to JS) | 5.3+ | Type-safe Node.js services | Shares types with frontend, prevents runtime errors in async code, excellent for API contracts |
-| Backend Framework | Express.js | 4.18+ | Lightweight REST API server | Battle-tested, minimal overhead, middleware ecosystem (auth, CORS, logging), simpler than NestJS for MVP |
-| API Style | REST | N/A | HTTP JSON endpoints | Simpler than GraphQL for CRUD operations, no complex queries needed, native browser fetch() support |
-| Database | PostgreSQL | 16 | Relational storage for documents/users | ACID compliance for document state, JSONB for flexible analysis results, excellent Node.js drivers (pg), free and open-source |
-| Cache | Redis | 7 | Queue + session cache + rate limiting | Fast in-memory storage (<1ms latency), BullMQ Lite integration, pub/sub for service coordination, persistence options for queue reliability |
-| File Storage | Host File System | N/A | Network share mounting (NFS/SMB) | Zero cost, already exists in target environments, Docker volume mounts provide abstraction, aligns with compliance requirements (data stays on-premises) |
-| Authentication | JWT (jsonwebtoken) | 9.0+ | Stateless auth tokens | RS256 signing for security, 24-hour expiration, no server-side session storage (scales horizontally), standard Bearer token pattern |
-| Frontend Testing | Vitest | 1.0+ | Unit tests for utility functions | Faster than Jest (Vite-powered), ESM-native, good TypeScript support, minimal config |
-| Backend Testing | Vitest + Supertest | 1.0+ / 6.3+ | Unit + integration tests for API/services | Supertest for HTTP endpoint testing, Vitest for service logic, unified test framework across frontend/backend |
-| E2E Testing | Manual Testing | N/A | Browser workflow validation | Playwright/Cypress deferred to post-MVP (too much setup overhead), manual checklist sufficient for MVP |
-| Build Tool | esbuild (via tsx) | 0.19+ | Fast TypeScript transpilation | 100x faster than tsc, single-command dev server (tsx watch), minimal config, builds entire backend in <1s |
-| Bundler | None (for backend) / esbuild (for frontend) | N/A / 0.19+ | Frontend asset bundling | Backend uses Node.js native ESM (no bundling), frontend bundles to single JS file for performance |
-| IaC Tool | Docker Compose | 2.0+ | Container orchestration | Declarative service definitions, one-command deployment, simpler than Terraform/Ansible for single-host setup |
-| CI/CD | GitHub Actions | N/A | Automated testing + Docker builds | Free for open-source, YAML-based workflows, Docker Hub integration for image publishing |
-| Monitoring | Pino (logging) + manual metrics | 8.16+ | Structured JSON logs to stdout | High-performance logging (50k logs/sec), integrates with Docker logs, post-MVP: Grafana/Prometheus for dashboards |
-| Logging | Pino | 8.16+ | Structured JSON logs | Outputs to stdout (Docker captures), filterable by service/level, supports child loggers for request tracing |
-| CSS Framework | Custom (Tailwind-inspired) | N/A | Utility classes for rapid styling | Inline styles + minimal CSS file, no build step for MVP, Tailwind color palette for accessibility-tested contrast |
+| Category             | Technology                                  | Version     | Purpose                                   | Rationale                                                                                                                                                |
+| -------------------- | ------------------------------------------- | ----------- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Frontend Language    | TypeScript                                  | 5.3+        | Type-safe frontend code                   | Shares type definitions with backend (data models in `shared/`), catches errors at compile time, excellent IDE support                                   |
+| Frontend Framework   | Vanilla JavaScript                          | ES2022      | Lightweight UI with minimal dependencies  | No framework overhead (React/Vue add 100KB+), faster load times (<2s on 3G), simple debugging, aligns with "invisible UI" goal                           |
+| UI Component Library | Custom Components                           | N/A         | Minimal component set (8 core)            | PRD specifies custom design system, avoids Material-UI bloat (500KB+), full control over accessibility and branding                                      |
+| State Management     | None (DOM-based)                            | N/A         | Direct DOM manipulation for simple UI     | No global state needed—each review page is isolated session, reduces complexity vs Redux/Zustand                                                         |
+| Backend Language     | TypeScript (transpiled to JS)               | 5.3+        | Type-safe Node.js services                | Shares types with frontend, prevents runtime errors in async code, excellent for API contracts                                                           |
+| Backend Framework    | Express.js                                  | 4.18+       | Lightweight REST API server               | Battle-tested, minimal overhead, middleware ecosystem (auth, CORS, logging), simpler than NestJS for MVP                                                 |
+| API Style            | REST                                        | N/A         | HTTP JSON endpoints                       | Simpler than GraphQL for CRUD operations, no complex queries needed, native browser fetch() support                                                      |
+| Database             | PostgreSQL                                  | 16          | Relational storage for documents/users    | ACID compliance for document state, JSONB for flexible analysis results, excellent Node.js drivers (pg), free and open-source                            |
+| Cache                | Redis                                       | 7           | Queue + session cache + rate limiting     | Fast in-memory storage (<1ms latency), BullMQ Lite integration, pub/sub for service coordination, persistence options for queue reliability              |
+| File Storage         | Host File System                            | N/A         | Network share mounting (NFS/SMB)          | Zero cost, already exists in target environments, Docker volume mounts provide abstraction, aligns with compliance requirements (data stays on-premises) |
+| Authentication       | JWT (jsonwebtoken)                          | 9.0+        | Stateless auth tokens                     | RS256 signing for security, 24-hour expiration, no server-side session storage (scales horizontally), standard Bearer token pattern                      |
+| Frontend Testing     | Vitest                                      | 1.0+        | Unit tests for utility functions          | Faster than Jest (Vite-powered), ESM-native, good TypeScript support, minimal config                                                                     |
+| Backend Testing      | Vitest + Supertest                          | 1.0+ / 6.3+ | Unit + integration tests for API/services | Supertest for HTTP endpoint testing, Vitest for service logic, unified test framework across frontend/backend                                            |
+| E2E Testing          | Manual Testing                              | N/A         | Browser workflow validation               | Playwright/Cypress deferred to post-MVP (too much setup overhead), manual checklist sufficient for MVP                                                   |
+| Build Tool           | esbuild (via tsx)                           | 0.19+       | Fast TypeScript transpilation             | 100x faster than tsc, single-command dev server (tsx watch), minimal config, builds entire backend in <1s                                                |
+| Bundler              | None (for backend) / esbuild (for frontend) | N/A / 0.19+ | Frontend asset bundling                   | Backend uses Node.js native ESM (no bundling), frontend bundles to single JS file for performance                                                        |
+| IaC Tool             | Docker Compose                              | 2.0+        | Container orchestration                   | Declarative service definitions, one-command deployment, simpler than Terraform/Ansible for single-host setup                                            |
+| CI/CD                | GitHub Actions                              | N/A         | Automated testing + Docker builds         | Free for open-source, YAML-based workflows, Docker Hub integration for image publishing                                                                  |
+| Monitoring           | Pino (logging) + manual metrics             | 8.16+       | Structured JSON logs to stdout            | High-performance logging (50k logs/sec), integrates with Docker logs, post-MVP: Grafana/Prometheus for dashboards                                        |
+| Logging              | Pino                                        | 8.16+       | Structured JSON logs                      | Outputs to stdout (Docker captures), filterable by service/level, supports child loggers for request tracing                                             |
+| CSS Framework        | Custom (Tailwind-inspired)                  | N/A         | Utility classes for rapid styling         | Inline styles + minimal CSS file, no build step for MVP, Tailwind color palette for accessibility-tested contrast                                        |
 
 **Notes:**
+
 - **No ORM:** Using raw SQL with `pg` library instead of TypeORM/Prisma to reduce complexity and improve performance (ORMs add overhead for simple queries).
 - **No frontend build step initially:** Development uses native ESM modules in browser, production bundles with esbuild for single request (trade-off: faster dev iteration vs optimized production).
 - **Gemini API:** Official `@google/generative-ai` SDK (v0.1.3+) for multimodal analysis, configurable to swap models (Flash → Pro) via environment variable.
@@ -207,6 +210,7 @@ graph TB
 **Purpose:** Represents a scanned document throughout its lifecycle from detection through AI analysis to user approval and filing.
 
 **Key Attributes:**
+
 - `id` (UUID): Unique identifier for document, generated on detection
 - `filename` (string): Original scanned filename (e.g., `invoice_20251003_143052.pdf`)
 - `scan_path` (string): Absolute path to file in scan folder at detection time
@@ -220,6 +224,7 @@ graph TB
 - `updated_at` (timestamp): Last modification time
 
 **Relationships:**
+
 - BelongsTo User (via `user_id`) - one document reviewed by one user
 - HasMany ProcessingQueue entries (one document can have multiple retry attempts)
 
@@ -267,6 +272,7 @@ interface AnalysisResult {
 **Purpose:** Represents authenticated users who can review and approve document routing recommendations.
 
 **Key Attributes:**
+
 - `id` (UUID): Unique user identifier
 - `username` (string, unique): Login username (email format optional for MVP)
 - `password_hash` (string): bcrypt hash of password (never store plaintext)
@@ -274,6 +280,7 @@ interface AnalysisResult {
 - `updated_at` (timestamp): Last modification time
 
 **Relationships:**
+
 - HasMany Documents (via `user_id`) - one user can review multiple documents
 
 #### TypeScript Interface
@@ -302,6 +309,7 @@ interface UserDTO {
 **Purpose:** Tracks document analysis jobs in Redis queue with retry state and error handling.
 
 **Key Attributes:**
+
 - `id` (UUID): Unique queue entry identifier
 - `document_id` (UUID): Foreign key to Document being processed
 - `status` (enum): Queue state—`pending`, `processing`, `completed`, `failed`
@@ -311,6 +319,7 @@ interface UserDTO {
 - `completed_at` (timestamp, nullable): Job completion time
 
 **Relationships:**
+
 - BelongsTo Document (via `document_id`) - each queue entry processes one document
 
 #### TypeScript Interface
@@ -343,6 +352,7 @@ interface QueueJob {
 **Purpose:** Groups multiple analyzed documents for batch email notifications (15-second idle trigger).
 
 **Key Attributes:**
+
 - `id` (UUID): Unique batch identifier
 - `document_ids` (UUID[]): Array of document IDs included in this batch
 - `created_at` (timestamp): When first document was analyzed (batch trigger started)
@@ -352,6 +362,7 @@ interface QueueJob {
 - `error_message` (string, nullable): SMTP error details if send failed
 
 **Relationships:**
+
 - HasMany Documents (via `document_ids` array) - one batch contains multiple documents
 
 #### TypeScript Interface
@@ -729,6 +740,7 @@ paths:
 ```
 
 **Authentication Flow:**
+
 1. User POSTs credentials to `/auth/login`
 2. Server validates against bcrypt hash in database
 3. Server generates JWT with RS256 signing (private key from env)
@@ -739,6 +751,7 @@ paths:
 
 **Error Response Format (Standardized):**
 All errors return JSON with structure:
+
 ```json
 {
   "error": {
@@ -760,28 +773,33 @@ All errors return JSON with structure:
 **Responsibility:** Continuously monitor scan folder for new PDF and image files using polling-based file system checks, detect file creation with stability validation (wait for file writes to complete), and queue discovered documents for AI analysis.
 
 **Key Interfaces:**
+
 - **Outbound:** `queue.addJob(documentData)` - Enqueue document for processing
 - **Outbound:** `documentRepo.create(doc)` - Store document metadata in database
 - **Inbound:** File system read operations (`fs.readdir`, `fs.stat`) on scan folder path
 
 **Dependencies:**
+
 - PostgreSQL database (via `documentRepo`)
 - Redis queue (via `queue` module)
 - Host file system (scan folder mounted as Docker volume)
 
 **Technology Stack:**
+
 - Node.js with TypeScript
 - `fs/promises` for async file operations
 - `chokidar` library (in polling mode) or custom polling loop with `setInterval`
 - `pino` logger for structured logging
 
 **Configuration (Environment Variables):**
+
 - `SCAN_FOLDER_PATH` - Path to monitored folder (e.g., `/mnt/scan-folder`)
 - `POLL_INTERVAL_MS` - Polling frequency (default 3000ms)
 - `FILE_STABILITY_TIMEOUT_MS` - Time to wait for file size stabilization (default 6000ms)
 - `SUPPORTED_EXTENSIONS` - Comma-separated list (default: `.pdf,.png,.jpg,.jpeg,.tiff`)
 
 **Operational Notes:**
+
 - Runs as long-lived process in Docker container with restart policy
 - Exposes GET `/health` endpoint for monitoring (returns last poll timestamp)
 - Graceful shutdown on SIGTERM (stops polling, waits for current operation to complete)
@@ -794,12 +812,14 @@ All errors return JSON with structure:
 **Responsibility:** Consume document analysis jobs from Redis queue, load external data sources (PO logs, vendor lists, folder structures), extract text and images from documents, send multimodal prompts to Gemini Vision API for classification and routing recommendations, parse and validate AI responses, and update database with analysis results.
 
 **Key Interfaces:**
+
 - **Inbound:** `queue.getNextJob()` - Pop document from processing queue
 - **Outbound:** Gemini API (`generateContent` with image + text prompt)
 - **Outbound:** `documentRepo.update(id, analysis_result)` - Store AI analysis in database
 - **Inbound:** File system read (document files from scan folder)
 
 **Dependencies:**
+
 - PostgreSQL database (via `documentRepo`)
 - Redis queue (via `queue` module)
 - Google Gemini API (via `@google/generative-ai` SDK)
@@ -807,6 +827,7 @@ All errors return JSON with structure:
 - External data sources (CSV/JSON files mounted as volumes)
 
 **Technology Stack:**
+
 - Node.js with TypeScript
 - `@google/generative-ai` SDK (v0.1.3+) for Gemini integration
 - `pdf-parse` or `pdf-lib` for PDF text extraction
@@ -815,6 +836,7 @@ All errors return JSON with structure:
 - `pino` logger
 
 **Configuration (Environment Variables):**
+
 - `GEMINI_API_KEY` - Google AI API key (required)
 - `GEMINI_MODEL` - Model name (default: `gemini-1.5-flash`)
 - `PO_LOGS_PATH` - Path to PO logs CSV
@@ -823,6 +845,7 @@ All errors return JSON with structure:
 - `GEMINI_RATE_LIMIT_RPM` - Requests per minute limit (default: 15 for free tier)
 
 **Operational Notes:**
+
 - Runs as long-lived process, can scale to multiple instances (queue ensures atomic job consumption)
 - Implements circuit breaker for Gemini API (after 3 failures, pause 60s)
 - Loads external data sources on startup, reloads on SIGHUP signal
@@ -836,6 +859,7 @@ All errors return JSON with structure:
 **Responsibility:** Serve as central HTTP gateway providing REST endpoints for authentication, document metadata retrieval, approval/rejection actions, and static file hosting for frontend web UI.
 
 **Key Interfaces:**
+
 - **Inbound:** HTTP requests from web browser (frontend)
 - **Outbound:** `documentRepo.findById(id)` - Fetch document data
 - **Outbound:** `userRepo.authenticate(username, password)` - Validate credentials
@@ -843,12 +867,14 @@ All errors return JSON with structure:
 - **Outbound:** Redis cache (session storage, rate limiting counters)
 
 **Dependencies:**
+
 - PostgreSQL database (via `documentRepo`, `userRepo`)
 - Redis cache (via `redisClient` module)
 - File system (scan folder for reading, output folders for writing)
 - JWT library (`jsonwebtoken`) for auth token generation/validation
 
 **Technology Stack:**
+
 - Node.js with TypeScript
 - `express` framework (v4.18+)
 - `jsonwebtoken` for JWT auth (RS256 algorithm)
@@ -859,6 +885,7 @@ All errors return JSON with structure:
 - `pino-http` for request logging
 
 **Configuration (Environment Variables):**
+
 - `PORT` - HTTP listen port (default: 3000)
 - `JWT_PRIVATE_KEY` - RS256 private key (PEM format)
 - `JWT_PUBLIC_KEY` - RS256 public key (PEM format)
@@ -867,6 +894,7 @@ All errors return JSON with structure:
 - `OUTPUT_FOLDER_BASE` - Base path for output folders
 
 **Operational Notes:**
+
 - Serves static files from `frontend/` directory at root path (`/`)
 - Authentication middleware validates JWT on protected routes
 - Graceful shutdown closes database connections, flushes Redis buffers
@@ -880,6 +908,7 @@ All errors return JSON with structure:
 **Responsibility:** Monitor database for analyzed documents, implement 15-second idle trigger to batch multiple documents into single email summary, generate HTML email templates with document thumbnails and AI recommendations, and deliver batch notification emails via SMTP.
 
 **Key Interfaces:**
+
 - **Inbound:** Database polling (`SELECT * FROM documents WHERE status='analyzed' AND notified=false`)
 - **Outbound:** SMTP server (via `nodemailer`)
 - **Outbound:** `documentRepo.update(id, { notified: true })` - Mark documents as notified
@@ -887,11 +916,13 @@ All errors return JSON with structure:
 - **Inbound:** File system read (document thumbnails generation)
 
 **Dependencies:**
+
 - PostgreSQL database (via `documentRepo`, `batchRepo`)
 - SMTP server (Gmail, SendGrid, AWS SES, or local relay)
 - File system (scan folder for reading documents to generate thumbnails)
 
 **Technology Stack:**
+
 - Node.js with TypeScript
 - `nodemailer` for SMTP email delivery
 - `handlebars` or `mustache` for HTML template rendering
@@ -899,6 +930,7 @@ All errors return JSON with structure:
 - `pino` logger
 
 **Configuration (Environment Variables):**
+
 - `SMTP_HOST` - SMTP server hostname
 - `SMTP_PORT` - SMTP port (default: 587 for TLS, 465 for SSL)
 - `SMTP_USER` - SMTP authentication username
@@ -909,6 +941,7 @@ All errors return JSON with structure:
 - `WEB_UI_BASE_URL` - Base URL for review links (e.g., `https://ai-scanner.local`)
 
 **Operational Notes:**
+
 - Runs as long-lived process with 2-second polling interval
 - Generates review tokens as short-lived JWTs (4-hour expiration)
 - Email template includes plain text fallback for non-HTML clients
@@ -923,6 +956,7 @@ All errors return JSON with structure:
 **Responsibility:** Provide shared TypeScript type definitions, utility functions, and constants used across frontend and backend services to ensure type safety and code reuse in monorepo.
 
 **Key Interfaces:**
+
 - **Exports:** TypeScript interfaces (`Document`, `User`, `AnalysisResult`, etc.)
 - **Exports:** Utility functions (filename sanitization, path validation, date formatting)
 - **Exports:** Constants (file extensions, status enums, API error codes)
@@ -930,10 +964,12 @@ All errors return JSON with structure:
 **Dependencies:** None (standalone package)
 
 **Technology Stack:**
+
 - TypeScript (type definitions only, no runtime code)
 - Pure JavaScript utilities (no external dependencies for maximum portability)
 
 **Package Contents:**
+
 ```
 shared/
 ├── src/
@@ -955,6 +991,7 @@ shared/
 ```
 
 **Usage Example:**
+
 ```typescript
 // In frontend/src/api/documents.ts
 import { Document, AnalysisResult } from '@ai-scanner/shared';
@@ -1032,6 +1069,7 @@ graph TB
 ```
 
 **Component Interaction Notes:**
+
 - All services communicate asynchronously (no direct HTTP calls between backend services)
 - Database serves as state coordination layer (no service-to-service messaging)
 - Queue decouples producer (watcher) from consumer (worker) for resilience
@@ -1050,9 +1088,11 @@ graph TB
 - **Rate Limits:** Free tier: 15 requests/minute, 1500 requests/day; Paid tier: 1000 requests/minute
 
 **Key Endpoints Used:**
+
 - `POST /v1/models/gemini-1.5-flash:generateContent` - Submit multimodal prompt (image + text) for analysis, receive structured JSON response with classification
 
 **Integration Notes:**
+
 - Use official `@google/generative-ai` Node.js SDK (handles retries, rate limiting)
 - Configure `generation_config` for structured output: `response_mime_type: "application/json"`, `temperature: 0.2` (deterministic)
 - Prompt engineering: Load template from `prompts/analysis-prompt.txt`, inject external data context (PO logs snippet, vendor list, folder structure)
@@ -1061,6 +1101,7 @@ graph TB
 - Circuit breaker: After 3 consecutive API failures, pause requests for 60 seconds to avoid hammering failed endpoint
 
 **Example Request (via SDK):**
+
 ```javascript
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
@@ -1069,13 +1110,13 @@ const model = genAI.getGenerativeModel({
   model: 'gemini-1.5-flash',
   generationConfig: {
     responseMimeType: 'application/json',
-    temperature: 0.2
-  }
+    temperature: 0.2,
+  },
 });
 
 const result = await model.generateContent([
   { text: promptText }, // Includes context + instructions
-  { inlineData: { data: imageBase64, mimeType: 'image/png' } }
+  { inlineData: { data: imageBase64, mimeType: 'image/png' } },
 ]);
 
 const analysis = JSON.parse(result.response.text());
@@ -1156,12 +1197,14 @@ sequenceDiagram
 ```
 
 **Error Handling Paths (Not Shown Above):**
+
 - **File Lock Detected:** Watcher retries stability check for up to 30 seconds, then marks document as `failed` with error message
 - **Gemini API Timeout:** Worker retries job 3 times, then updates status to `analysis_failed`
 - **SMTP Send Failure:** Mailer retries 3 times with exponential backoff, marks batch as `send_failed` for manual investigation
 - **File Operation Failure (Approval):** API returns 500 error, frontend shows retry button, document stays in `analyzed` state
 
 **Performance Optimizations:**
+
 - Worker processes documents in parallel (multiple worker instances can run simultaneously)
 - Frontend uses optimistic UI (shows success immediately while file operation completes in background)
 - Batch email reduces SMTP overhead (single email for multiple documents vs individual emails)
@@ -1251,6 +1294,7 @@ CREATE TRIGGER update_documents_updated_at BEFORE UPDATE ON documents
 ```
 
 **Schema Design Notes:**
+
 - **JSONB for analysis_result:** Flexible schema for Gemini responses (field structure may evolve without migrations)
 - **Partial index on notified:** Optimizes email service query (`WHERE status='analyzed' AND notified=false`) by indexing only relevant rows
 - **ON DELETE CASCADE for processing_queue:** When document deleted, related queue entries auto-deleted (cleanup)
@@ -1259,6 +1303,7 @@ CREATE TRIGGER update_documents_updated_at BEFORE UPDATE ON documents
 - **CHECK constraints:** Enforce valid enum values at database level (redundant with app validation for data integrity)
 
 **Migration Strategy:**
+
 - Use `node-pg-migrate` library for version-controlled schema changes
 - Initial migration creates tables above
 - Future migrations handled via numbered migration files (`001_initial_schema.sql`, `002_add_columns.sql`)
@@ -1271,6 +1316,7 @@ CREATE TRIGGER update_documents_updated_at BEFORE UPDATE ON documents
 ### Component Architecture
 
 **Component Organization:**
+
 ```
 frontend/
 ├── index.html               # Main entry point (SPA shell)
@@ -1301,6 +1347,7 @@ frontend/
 ```
 
 **Component Template (Button.js Example):**
+
 ```typescript
 // frontend/js/components/Button.js
 export class Button {
@@ -1330,7 +1377,7 @@ export class Button {
 const approveBtn = new Button({
   text: 'Approve & File',
   variant: 'primary',
-  onClick: handleApprove
+  onClick: handleApprove,
 });
 document.querySelector('#actions').appendChild(approveBtn.render());
 ```
@@ -1338,6 +1385,7 @@ document.querySelector('#actions').appendChild(approveBtn.render());
 ### State Management Architecture
 
 **State Structure:**
+
 ```typescript
 // No global state management library (Redux/Zustand) for MVP
 // Each page manages its own local state via closures and DOM data attributes
@@ -1369,6 +1417,7 @@ function ReviewPage(documentId) {
 ```
 
 **State Management Patterns:**
+
 - **Page-Level State:** Each page (LoginPage, ReviewPage) manages own state via closures (no global store)
 - **URL as State:** Document ID and review token stored in URL query params (bookmarkable, shareable links)
 - **LocalStorage for Auth:** JWT token persisted in localStorage for session continuity across page reloads
@@ -1379,13 +1428,14 @@ function ReviewPage(documentId) {
 ### Routing Architecture
 
 **Route Organization:**
+
 ```javascript
 // frontend/js/utils/router.js
 const routes = {
-  '/': LoginPage,           // Default route redirects to login if not authenticated
+  '/': LoginPage, // Default route redirects to login if not authenticated
   '/login': LoginPage,
   '/review/:documentId': ReviewPage,
-  '/success': SuccessPage
+  '/success': SuccessPage,
 };
 
 function router() {
@@ -1416,6 +1466,7 @@ document.addEventListener('DOMContentLoaded', router);
 ```
 
 **Protected Route Pattern:**
+
 ```javascript
 // frontend/js/utils/auth.js
 export function isAuthenticated() {
@@ -1445,6 +1496,7 @@ export function ReviewPage(params) {
 ### Frontend Services Layer
 
 **API Client Setup:**
+
 ```typescript
 // frontend/js/api/client.js
 const API_BASE_URL = window.location.origin; // Same-origin (no CORS)
@@ -1454,7 +1506,7 @@ export async function apiFetch(endpoint, options = {}) {
 
   const headers = {
     'Content-Type': 'application/json',
-    ...options.headers
+    ...options.headers,
   };
 
   if (token) {
@@ -1463,7 +1515,7 @@ export async function apiFetch(endpoint, options = {}) {
 
   const response = await fetch(API_BASE_URL + endpoint, {
     ...options,
-    headers
+    headers,
   });
 
   if (response.status === 401) {
@@ -1483,6 +1535,7 @@ export async function apiFetch(endpoint, options = {}) {
 ```
 
 **Service Example (Document Service):**
+
 ```typescript
 // frontend/js/api/documents.js
 import { apiFetch } from './client.js';
@@ -1496,7 +1549,7 @@ export async function approveDocument(documentId, destination) {
   const endpoint = `/api/documents/${documentId}/approve`;
   return apiFetch(endpoint, {
     method: 'POST',
-    body: JSON.stringify(destination)
+    body: JSON.stringify(destination),
   });
 }
 
@@ -1504,7 +1557,7 @@ export async function rejectDocument(documentId, reason) {
   const endpoint = `/api/documents/${documentId}/reject`;
   return apiFetch(endpoint, {
     method: 'POST',
-    body: JSON.stringify({ reason })
+    body: JSON.stringify({ reason }),
   });
 }
 
@@ -1514,7 +1567,7 @@ import { getDocument, approveDocument } from './api/documents.js';
 const doc = await getDocument(documentId, reviewToken);
 await approveDocument(documentId, {
   destination_folder: '/Quality/Suppliers/AcmeCorp',
-  filename: 'PO-12345.pdf'
+  filename: 'PO-12345.pdf',
 });
 ```
 
@@ -1525,6 +1578,7 @@ await approveDocument(documentId, {
 ### Service Architecture (Traditional Server)
 
 **Controller/Route Organization:**
+
 ```
 services/api/src/
 ├── index.ts                  # Express app entry point
@@ -1555,6 +1609,7 @@ services/api/src/
 ```
 
 **Controller Template:**
+
 ```typescript
 // services/api/src/controllers/documents.controller.ts
 import { Request, Response } from 'express';
@@ -1605,12 +1660,12 @@ export async function approveDocument(req: Request, res: Response) {
     status: 'filed',
     destination_path: destinationPath,
     user_action: 'approved',
-    user_id: req.user.id
+    user_id: req.user.id,
   });
 
   res.json({
     message: 'Document filed successfully',
-    destination: destinationPath
+    destination: destinationPath,
   });
 }
 ```
@@ -1621,6 +1676,7 @@ export async function approveDocument(req: Request, res: Response) {
 (Refer to Database Schema section above for SQL DDL)
 
 **Data Access Layer (Repository Pattern):**
+
 ```typescript
 // services/api/src/repositories/document.repo.ts
 import { pool } from '../utils/db';
@@ -1628,10 +1684,7 @@ import { Document, AnalysisResult } from '@ai-scanner/shared';
 
 export const documentRepo = {
   async findById(id: string): Promise<Document | null> {
-    const result = await pool.query(
-      'SELECT * FROM documents WHERE id = $1',
-      [id]
-    );
+    const result = await pool.query('SELECT * FROM documents WHERE id = $1', [id]);
     return result.rows[0] || null;
   },
 
@@ -1664,11 +1717,12 @@ export const documentRepo = {
        ORDER BY scan_timestamp ASC`
     );
     return result.rows;
-  }
+  },
 };
 ```
 
 **Database Connection Pool:**
+
 ```typescript
 // services/api/src/utils/db.ts
 import { Pool } from 'pg';
@@ -1677,7 +1731,7 @@ export const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   max: 20, // Maximum connections
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000
+  connectionTimeoutMillis: 2000,
 });
 
 pool.on('error', (err) => {
@@ -1700,6 +1754,7 @@ export async function checkDbHealth(): Promise<boolean> {
 ### Authentication and Authorization
 
 **Auth Flow:**
+
 ```mermaid
 sequenceDiagram
     participant User
@@ -1730,6 +1785,7 @@ sequenceDiagram
 ```
 
 **Middleware/Guards (JWT Validation):**
+
 ```typescript
 // services/api/src/middleware/auth.middleware.ts
 import jwt from 'jsonwebtoken';
@@ -1742,7 +1798,7 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({
-      error: { code: 'UNAUTHORIZED', message: 'Missing or invalid token' }
+      error: { code: 'UNAUTHORIZED', message: 'Missing or invalid token' },
     });
   }
 
@@ -1755,11 +1811,11 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
   } catch (err) {
     if (err.name === 'TokenExpiredError') {
       return res.status(401).json({
-        error: { code: 'TOKEN_EXPIRED', message: 'Token has expired' }
+        error: { code: 'TOKEN_EXPIRED', message: 'Token has expired' },
       });
     }
     return res.status(401).json({
-      error: { code: 'INVALID_TOKEN', message: 'Invalid token signature' }
+      error: { code: 'INVALID_TOKEN', message: 'Invalid token signature' },
     });
   }
 }
@@ -1773,6 +1829,7 @@ router.post('/api/documents/:id/approve', authMiddleware, documentsController.ap
 ```
 
 **Password Hashing (bcrypt):**
+
 ```typescript
 // services/api/src/controllers/auth.controller.ts
 import bcrypt from 'bcrypt';
@@ -1931,6 +1988,7 @@ ai.scanner/
 ```
 
 **Notes:**
+
 - Services use TypeScript transpiled to JavaScript at runtime via `tsx` (development) or `esbuild` (production)
 - Frontend uses vanilla JavaScript (ES2022 modules) with no build step for MVP (future: bundle with esbuild)
 - Shared package enables type sharing between frontend/backend (e.g., `import { Document } from '@ai-scanner/shared'`)
@@ -1944,6 +2002,7 @@ ai.scanner/
 ### Local Development Setup
 
 **Prerequisites:**
+
 ```bash
 # Install required tools
 # Node.js v24.5.0 (use nvm for version management)
@@ -1963,6 +2022,7 @@ docker-compose --version
 ```
 
 **Initial Setup:**
+
 ```bash
 # Clone repository
 git clone https://github.com/yourusername/ai.scanner.git
@@ -1999,6 +2059,7 @@ cd ../..
 ```
 
 **Development Commands:**
+
 ```bash
 # Start all services in development mode (with hot reload)
 npm run dev
@@ -2084,6 +2145,7 @@ TZ=UTC  # Timezone for timestamps
 ```
 
 **Notes:**
+
 - Generate JWT keys with `./scripts/generate-keys.sh` (uses `openssl` to create RSA key pair)
 - SMTP password for Gmail requires "App Password" (not regular password)—enable 2FA then generate at https://myaccount.google.com/apppasswords
 - Folder paths use host file system paths (Docker volumes mount these into containers)
@@ -2096,12 +2158,14 @@ TZ=UTC  # Timezone for timestamps
 ### Deployment Strategy
 
 **Frontend Deployment:**
+
 - **Platform:** Static files served by Express API (same container, no separate CDN for MVP)
 - **Build Command:** `npm run build:frontend` (bundles JS/CSS with esbuild, outputs to `frontend/dist/`)
 - **Output Directory:** `frontend/dist/` (served via `express.static('frontend/dist')`)
 - **CDN/Edge:** None for MVP (future: Cloudflare CDN for global users)
 
 **Backend Deployment:**
+
 - **Platform:** Docker Compose on self-hosted Linux VM (AWS EC2, DigitalOcean, Azure VM, or on-premises server)
 - **Build Command:** `docker-compose build` (builds Docker images for all services)
 - **Deployment Method:** `docker-compose up -d` (detached mode, services run in background)
@@ -2154,6 +2218,7 @@ jobs:
 ```
 
 **Deployment Workflow:**
+
 1. Developer pushes code to `dev` branch
 2. GitHub Actions runs tests and linter
 3. If tests pass, merge to `main` branch
@@ -2164,18 +2229,20 @@ jobs:
 
 ### Environments
 
-| Environment | Frontend URL | Backend URL | Purpose |
-|-------------|-------------|-------------|---------|
-| Development | http://localhost:3000 | http://localhost:3000 | Local development (hot reload, debug logs) |
-| Staging | https://staging.ai-scanner.local | https://staging.ai-scanner.local | Pre-production testing (production-like config, test data) |
-| Production | https://ai-scanner.local | https://ai-scanner.local | Live environment (real documents, on-premises deployment) |
+| Environment | Frontend URL                     | Backend URL                      | Purpose                                                    |
+| ----------- | -------------------------------- | -------------------------------- | ---------------------------------------------------------- |
+| Development | http://localhost:3000            | http://localhost:3000            | Local development (hot reload, debug logs)                 |
+| Staging     | https://staging.ai-scanner.local | https://staging.ai-scanner.local | Pre-production testing (production-like config, test data) |
+| Production  | https://ai-scanner.local         | https://ai-scanner.local         | Live environment (real documents, on-premises deployment)  |
 
 **Environment-Specific Configuration:**
+
 - **Development:** Uses `.env.development` (debug logs, hot reload, sample data)
 - **Staging:** Uses `.env.staging` (production Docker images, test SMTP server, staging database)
 - **Production:** Uses `.env.production` (production SMTP, real folder mounts, optimized logging)
 
 **Deployment Hosts:**
+
 - Development: Developer's laptop (Docker Desktop)
 - Staging: Cloud VM or on-premises test server (e.g., AWS EC2 t3.medium, 2 vCPU, 4GB RAM)
 - Production: On-premises server or cloud VM in customer's region (e.g., DigitalOcean Droplet, 4GB RAM, 80GB SSD)
@@ -2187,42 +2254,50 @@ jobs:
 ### Security Requirements
 
 **Frontend Security:**
+
 - **CSP Headers:** `Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;` (blocks XSS via inline scripts, allows data URIs for email thumbnails)
 - **XSS Prevention:** All user input sanitized before rendering (use `textContent` instead of `innerHTML`, escape HTML entities in filenames)
 - **Secure Storage:** JWT tokens stored in `localStorage` (alternative: `httpOnly` cookies for CSRF protection, but complicates frontend auth flow)
 
 **Backend Security:**
+
 - **Input Validation:** All API endpoints validate request bodies with JSON schema (joi or zod library), reject invalid input with 400 error
 - **Rate Limiting:** API endpoints limited to 100 requests/minute per IP (express-rate-limit middleware), Gemini API limited to 15 requests/minute (internal token bucket)
 - **CORS Policy:** `Access-Control-Allow-Origin: https://ai-scanner.local` (production), `http://localhost:3000` (development), no wildcard `*` allowed
 
 **Authentication Security:**
+
 - **Token Storage:** JWT in localStorage (frontend), never expose in URLs (use POST body or headers only)
 - **Session Management:** 24-hour token expiration, no automatic refresh (user re-authenticates after expiration)
 - **Password Policy:** Minimum 8 characters (configurable via env), bcrypt hashing with 10 rounds, no complexity requirements for MVP (future: add uppercase/number/symbol rules)
 
 **File System Security:**
+
 - **Path Validation:** All file paths validated against whitelist (scan folder, output folders), reject `../` traversal attempts
 - **Permission Checks:** File operations fail gracefully if permissions denied, log ERROR with actionable message ("Check folder permissions: `chmod 755 /mnt/output-folders`")
 
 ### Performance Optimization
 
 **Frontend Performance:**
+
 - **Bundle Size Target:** <100KB total (JS + CSS), achieve via vanilla JS (no React), minimal dependencies, tree-shaking with esbuild
 - **Loading Strategy:** Lazy-load document preview (fetch image only when in viewport), inline critical CSS (<5KB), async load non-critical JS
 - **Caching Strategy:** Service worker for offline support (future), browser cache headers for static assets (1 year: `Cache-Control: public, max-age=31536000`), ETags for document previews
 
 **Backend Performance:**
+
 - **Response Time Target:** <100ms for API endpoints (excluding file I/O), <500ms for approval action (including file move), <5s for Gemini API call
 - **Database Optimization:** Index on `documents.status` and `documents.notified` (partial index for email query), connection pooling (max 20 connections), query result caching in Redis (5-minute TTL)
 - **Caching Strategy:** Redis cache for user sessions (30-minute TTL), document metadata (5-minute TTL), folder structure (1-hour TTL), Gemini rate limit counters (1-minute rolling window)
 
 **Concurrency:**
+
 - Worker service can scale to multiple instances (each consumes from shared Redis queue atomically)
 - API service stateless (can run multiple instances behind load balancer—future)
 - Database connection pooling prevents connection exhaustion (max 20 connections, queue requests if pool full)
 
 **Resource Limits (Docker):**
+
 ```yaml
 # docker-compose.yml excerpt
 services:
@@ -2253,6 +2328,7 @@ Frontend Unit Tests     Backend Unit Tests
 ```
 
 **Distribution:**
+
 - **Unit Tests:** 70% of test effort (fast, isolated, test business logic)
 - **Integration Tests:** 25% (test service interactions, database queries, API endpoints)
 - **E2E Tests:** 5% (manual testing of critical workflows, browser automation deferred to post-MVP)
@@ -2260,6 +2336,7 @@ Frontend Unit Tests     Backend Unit Tests
 ### Test Organization
 
 **Frontend Tests:**
+
 ```
 frontend/tests/
 ├── unit/
@@ -2277,6 +2354,7 @@ frontend/tests/
 ```
 
 **Backend Tests:**
+
 ```
 services/api/tests/
 ├── unit/
@@ -2294,6 +2372,7 @@ services/api/tests/
 ```
 
 **E2E Tests (Manual Checklist):**
+
 ```
 tests/e2e/
 └── manual-checklist.md            # Step-by-step manual test cases
@@ -2302,6 +2381,7 @@ tests/e2e/
 ### Test Examples
 
 **Frontend Component Test:**
+
 ```javascript
 // frontend/tests/unit/components/Button.test.js
 import { describe, it, expect } from 'vitest';
@@ -2328,7 +2408,9 @@ describe('Button Component', () => {
     let clicked = false;
     const button = new Button({
       text: 'Test',
-      onClick: () => { clicked = true; }
+      onClick: () => {
+        clicked = true;
+      },
     });
     const element = button.render();
 
@@ -2339,6 +2421,7 @@ describe('Button Component', () => {
 ```
 
 **Backend API Test:**
+
 ```typescript
 // services/api/tests/integration/documents.integration.test.ts
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
@@ -2387,7 +2470,7 @@ describe('Document API', () => {
       .set('Authorization', `Bearer ${authToken}`)
       .send({
         destination_folder: '/tmp/test-output',
-        filename: 'approved-test.pdf'
+        filename: 'approved-test.pdf',
       })
       .expect(200);
 
@@ -2395,14 +2478,13 @@ describe('Document API', () => {
   });
 
   it('Returns 401 without auth token', async () => {
-    await request(app)
-      .get(`/api/documents/${documentId}`)
-      .expect(401);
+    await request(app).get(`/api/documents/${documentId}`).expect(401);
   });
 });
 ```
 
 **E2E Test (Manual):**
+
 ```markdown
 # Manual E2E Test Checklist
 
@@ -2477,18 +2559,19 @@ describe('Document API', () => {
 
 ### Naming Conventions
 
-| Element | Frontend | Backend | Example |
-|---------|----------|---------|---------|
-| Components | PascalCase | - | `Button.js`, `DocumentPreview.js` |
-| Hooks | camelCase with 'use' prefix | - | `useAuth.js`, `useRouter.js` |
-| API Routes | - | kebab-case | `/api/documents/:id`, `/auth/login` |
-| Database Tables | - | snake_case | `documents`, `processing_queue`, `batches` |
-| TypeScript Interfaces | PascalCase | PascalCase | `Document`, `AnalysisResult`, `QueueJob` |
-| Functions | camelCase | camelCase | `approveDocument()`, `sanitizeFilename()` |
-| Constants | SCREAMING_SNAKE_CASE | SCREAMING_SNAKE_CASE | `MAX_RETRY_COUNT`, `DEFAULT_POLL_INTERVAL` |
-| Environment Variables | SCREAMING_SNAKE_CASE | SCREAMING_SNAKE_CASE | `GEMINI_API_KEY`, `SMTP_HOST` |
+| Element               | Frontend                    | Backend              | Example                                    |
+| --------------------- | --------------------------- | -------------------- | ------------------------------------------ |
+| Components            | PascalCase                  | -                    | `Button.js`, `DocumentPreview.js`          |
+| Hooks                 | camelCase with 'use' prefix | -                    | `useAuth.js`, `useRouter.js`               |
+| API Routes            | -                           | kebab-case           | `/api/documents/:id`, `/auth/login`        |
+| Database Tables       | -                           | snake_case           | `documents`, `processing_queue`, `batches` |
+| TypeScript Interfaces | PascalCase                  | PascalCase           | `Document`, `AnalysisResult`, `QueueJob`   |
+| Functions             | camelCase                   | camelCase            | `approveDocument()`, `sanitizeFilename()`  |
+| Constants             | SCREAMING_SNAKE_CASE        | SCREAMING_SNAKE_CASE | `MAX_RETRY_COUNT`, `DEFAULT_POLL_INTERVAL` |
+| Environment Variables | SCREAMING_SNAKE_CASE        | SCREAMING_SNAKE_CASE | `GEMINI_API_KEY`, `SMTP_HOST`              |
 
 **Additional Conventions:**
+
 - **File Names:** Match primary export name (`Button.js` exports `Button` class, `document.repo.ts` exports `documentRepo`)
 - **Test Files:** Same name as source file with `.test.` suffix (`Button.test.js`, `document.repo.test.ts`)
 - **Async Functions:** Prefix with `async` keyword, return Promises (never mix callbacks and Promises)
@@ -2607,7 +2690,7 @@ async function handleApprove() {
   } catch (err) {
     if (err.code === 'FILE_OPERATION_FAILED') {
       showError('Unable to file document. Please check folder permissions and try again.', {
-        retry: () => handleApprove() // Retry button
+        retry: () => handleApprove(), // Retry button
       });
     } else {
       showError('An unexpected error occurred. Please try again later.');
@@ -2629,14 +2712,17 @@ export function errorHandler(err: Error, req: Request, res: Response, next: Next
   const requestId = uuidv4();
 
   // Log error with full context
-  logger.error({
-    err,
-    requestId,
-    method: req.method,
-    path: req.path,
-    body: req.body,
-    user: req.user?.id
-  }, 'Request error');
+  logger.error(
+    {
+      err,
+      requestId,
+      method: req.method,
+      path: req.path,
+      body: req.body,
+      user: req.user?.id,
+    },
+    'Request error'
+  );
 
   // Map errors to status codes
   let statusCode = 500;
@@ -2660,8 +2746,8 @@ export function errorHandler(err: Error, req: Request, res: Response, next: Next
       message: err.message,
       details: err.details || {},
       timestamp: new Date().toISOString(),
-      requestId
-    }
+      requestId,
+    },
   });
 }
 
@@ -2698,7 +2784,7 @@ export async function moveFile(source: string, destFolder: string, filename: str
     throw new FileOperationError('Unable to move file: ' + err.message, {
       source,
       destination: path.join(destFolder, filename),
-      errno: err.errno
+      errno: err.errno,
     });
   }
 }
@@ -2716,6 +2802,7 @@ export async function moveFile(source: string, destFolder: string, filename: str
 - **Performance Monitoring:** Custom metrics exposed via GET `/metrics` endpoints (Prometheus-compatible format for future Grafana dashboards)
 
 **MVP Monitoring:**
+
 - Pino logs with severity levels (debug, info, warn, error)
 - Health check endpoints (`/health`, `/health/db`, `/health/redis`) for uptime monitoring
 - Manual log review: `docker-compose logs -f --tail=100 worker` (tail recent worker logs)
@@ -2723,6 +2810,7 @@ export async function moveFile(source: string, destFolder: string, filename: str
 ### Key Metrics
 
 **Frontend Metrics:**
+
 - **Core Web Vitals:** (measured via Chrome DevTools, manual review)
   - LCP (Largest Contentful Paint): <2.5s
   - FID (First Input Delay): <100ms
@@ -2732,6 +2820,7 @@ export async function moveFile(source: string, destFolder: string, filename: str
 - **User Interactions:** Manual testing (count clicks to approve, measure time from email to approval)
 
 **Backend Metrics (Exposed via GET /metrics):**
+
 ```javascript
 // Example metrics output (Prometheus format)
 // GET /metrics response:
@@ -2776,6 +2865,7 @@ api_request_duration_ms_bucket{method="POST",path="/api/documents/:id/approve",l
 ```
 
 **Metric Collection Implementation:**
+
 ```typescript
 // services/api/src/utils/metrics.ts
 class Metrics {
@@ -2819,6 +2909,7 @@ metrics.incrementCounter('gemini_api_requests_total', { status: 'success' });
 ```
 
 **Health Monitoring:**
+
 - Manual checks: `curl http://localhost:3000/health` (should return 200 OK)
 - Automated uptime monitoring (post-MVP): UptimeRobot or Pingdom pinging `/health` every 5 minutes
 - Alert on 3 consecutive failures (email to admin)
@@ -2864,4 +2955,4 @@ This architecture provides comprehensive technical guidance for AI agent-driven 
 
 ---
 
-*Architecture v1.0 - Created 2025-10-03 using BMAD-METHOD™ framework by Winston (Architect Agent)*
+_Architecture v1.0 - Created 2025-10-03 using BMAD-METHOD™ framework by Winston (Architect Agent)_

@@ -12,12 +12,14 @@
 **Topic:** AI-powered document scanner routing system with intelligent classification, learning capabilities, and multi-industry support (QMS manufacturing + medical practices)
 
 **Session Goals:**
+
 - Define MVP for 1-week development timeline
 - Identify core architecture and technical requirements
 - Establish feature prioritization for v1 vs future releases
 - Design for dual purpose: personal use + public open-source GitHub repo
 
 **Techniques Used:**
+
 1. First Principles Thinking (20 min)
 2. SCAMPER Method - Combine, Modify, Eliminate (15 min)
 3. Role Playing - Multiple stakeholder perspectives (10 min)
@@ -25,6 +27,7 @@
 **Total Ideas Generated:** 35+
 
 **Key Themes Identified:**
+
 - Context-aware reasoning system (not just pattern matching)
 - User approval mandatory for all file operations (compliance/trust)
 - Batch processing critical for user experience
@@ -59,12 +62,14 @@
 10. **PDF rotation requirement:** Portrait scanner handling landscape documents/forms
 
 **Insights Discovered:**
+
 - This is NOT a simple pattern-matching ML problem - it's a **context-aware reasoning system** that fills information gaps
 - The "learning" isn't traditional ML training - it's more like ChatGPT memory: context-specific pattern recognition
 - Multi-industry use case fundamentally changes architecture (needs configurable document types, not hardcoded)
 - Security and compliance are first-class concerns (HIPAA for medical, ISO for QMS)
 
 **Notable Connections:**
+
 - Reasoning engine approach actually MORE achievable in 1 week than full ML training pipeline
 - Medical use case validates need for confidence scores (trust-building)
 - Batch processing solves both UX problem AND reduces infrastructure load
@@ -78,6 +83,7 @@
 **Ideas Generated:**
 
 #### Modify/Magnify:
+
 11. **Speed target:** AI analysis completes in <10-15 seconds (before user returns from scanner to desk)
 12. **Confidence scores:** Visible percentage/indicator showing AI certainty for each recommendation
 13. **Thumbnail preview:** Document preview image in email and web interface
@@ -87,22 +93,26 @@
 17. **Read/write transparency:** Clear indication of what will be written to filesystem before user approval
 
 #### Combine:
+
 18. **OCR + Gemini Vision pipeline:** Sophisticated multi-modal analysis using latest Gemini models
 19. **Output folder integration:** System reads from and writes to QMS database/folder structure
 20. **External data consultation:** PO logs, vendor databases for gap-filling during analysis
 
 #### Eliminate (MVP scope reduction):
+
 21. **Auth simplification explored:** Magic links OR simple username/password (security still prioritized)
 22. **Desktop tool deferred:** Not required for MVP, email notifications sufficient for v1
 23. **PDF rotation deferred:** Handle in v2, not critical for week 1
 24. **Advanced learning deferred:** Ship without ML training pipeline, add iteratively
 
 **Insights Discovered:**
+
 - "Keeping it lean" is strategic for 1-week timeline, but security cannot be cut
 - Batch email summaries dramatically improve UX vs individual emails per scan
 - Confidence scores serve dual purpose: UX transparency + debugging/improvement feedback
 
 **Notable Connections:**
+
 - Speed + notifications = user never feels like they're waiting
 - Thumbnail + confidence + reasoning = trust building through transparency
 - Email CC feature bridges gap until full desktop tool in v2
@@ -116,27 +126,32 @@
 **Ideas Generated:**
 
 #### Perspective 1: Busy QMS Manager
+
 25. **Batch email preference:** One summary email for multiple scans, not separate emails cluttering inbox
 26. **Quick feedback loop:** Need to review and approve quickly without context switching
 27. **15-second idle trigger:** Send summary email after 15s of no new scan activity (keeps processing while docs arrive)
 
 #### Perspective 2: IT Admin Installing ai.scanner
+
 28. **Docker Compose deployment:** One command setup (`docker-compose up`)
 29. **Simple .env configuration:** No complex config files, just environment variables
 30. **Postgres for persistence:** User sessions, queue management, feedback data
 31. **Clear documentation:** Setup must be "super easy" or adoption fails
 
 #### Perspective 3: Medical Office Receptionist
+
 32. **Misclassification = broken trust:** If 50-page patient chart detected as "packing slip", credibility destroyed
 33. **Large document strategy:** First 5 pages for summary analysis, but feed page count/filesize to model for context
 34. **Uncertainty indication:** System must say "I'm not sure" when confidence low, not guess wrong
 
 **Insights Discovered:**
+
 - Different industries have different "trust breaking" failure modes
 - Setup complexity is adoption killer for open-source projects
 - Batch timing is UX-critical: too fast = too many emails, too slow = feels broken
 
 **Notable Connections:**
+
 - Medical use case stress-tests confidence scoring requirement
 - IT admin perspective validates Docker + .env simplicity
 - All three perspectives reinforce: transparency > perfect accuracy
@@ -146,7 +161,8 @@
 ## Idea Categorization
 
 ### Immediate Opportunities
-*Ideas ready to implement in Week 1 MVP*
+
+_Ideas ready to implement in Week 1 MVP_
 
 1. **Core Workflow Pipeline**
    - Description: Folder monitoring → Gemini Vision analysis → batch email → web review → approved file routing
@@ -189,7 +205,8 @@
    - Resources needed: Prompt engineering, external data file reading
 
 ### Future Innovations
-*Ideas requiring development/research for v2+*
+
+_Ideas requiring development/research for v2+_
 
 9. **Desktop Tool (Windows + Mac)**
    - Description: Native app showing processing notifications, live file queue management
@@ -222,7 +239,8 @@
     - Timeline estimate: 2-3 weeks
 
 ### Moonshots
-*Ambitious, transformative concepts for future exploration*
+
+_Ambitious, transformative concepts for future exploration_
 
 15. **Multi-Tenant SaaS Version**
     - Description: Cloud-hosted ai.scanner as subscription service for companies
@@ -240,7 +258,8 @@
     - Challenges to overcome: WebSocket architecture, conflict resolution, presence indicators
 
 ### Insights & Learnings
-*Key realizations from the session*
+
+_Key realizations from the session_
 
 - **Reasoning > Recognition:** This isn't a computer vision problem—it's a reasoning problem. The AI needs to think through missing information, not just classify what it sees.
 - **Trust through Transparency:** Confidence scores, reasoning explanations, and "I'm not sure" admissions build more trust than perfect-seeming (but sometimes wrong) recommendations.
@@ -257,6 +276,7 @@
 ### Top 3 Priority Ideas
 
 #### #1 Priority: Core Workflow Pipeline with Reasoning Engine
+
 - **Rationale:** This is the product. Without this, nothing else matters. The reasoning engine (consulting PO logs, vendor lists) is the key differentiator from "dumb OCR."
 - **Next steps:**
   1. Choose tech stack (Python vs Node.js)
@@ -268,6 +288,7 @@
 - **Timeline:** Days 1-4 of week 1
 
 #### #2 Priority: Web Review Interface with Auth
+
 - **Rationale:** User approval is non-negotiable. Must be secure (confidential docs) but simple to use. This is where users spend 90% of their interaction time.
 - **Next steps:**
   1. Design review UI mockup (can be text-based for MVP)
@@ -279,6 +300,7 @@
 - **Timeline:** Days 3-5 of week 1 (parallel with backend)
 
 #### #3 Priority: Docker Compose Setup + Documentation
+
 - **Rationale:** Open-source adoption requirement. If IT admins can't get it running in 10 minutes, project fails to spread. Also critical for your own deployment.
 - **Next steps:**
   1. Create Dockerfile for app
@@ -294,12 +316,14 @@
 ## Reflection & Follow-up
 
 ### What Worked Well
+
 - First Principles revealed the "reasoning engine" insight early
 - Role Playing uncovered batch processing UX requirement
 - SCAMPER Eliminate forced ruthless MVP scoping
 - Rapid-fire decision making on auth, timing, large docs kept momentum
 
 ### Areas for Further Exploration
+
 - **Tech stack decision:** Python (more AI libs) vs Node.js (faster async) - needs decision before coding starts
 - **Email service selection:** SendGrid, AWS SES, SMTP relay - cost/complexity tradeoff
 - **Prompt engineering strategy:** How to structure Gemini prompts for reasoning + confidence scoring
@@ -307,11 +331,13 @@
 - **Medical compliance:** HIPAA requirements for patient chart handling (encryption, audit logs, access controls)
 
 ### Recommended Follow-up Techniques
+
 - **Morphological Analysis:** Map out all component combinations (queue system × email service × database × auth method) to find optimal stack
 - **Time Shifting:** "How would we build this if we had 1 month?" to identify what could be parallelized with more resources
 - **Assumption Reversal:** Challenge "user must approve every document" - what if we flip it to "auto-approve unless flagged"? (Future feature exploration)
 
 ### Questions That Emerged
+
 - What's the expected scan volume? (10/day? 100/day? affects infrastructure choices)
 - Should the system support multiple output folders/projects or single-tenant only?
 - How to handle scanner connectivity? (Network folder vs direct scanner API integration?)
@@ -320,6 +346,7 @@
 - How to version control the learning/prompts when feedback improves them?
 
 ### Next Session Planning
+
 - **Suggested topics:**
   1. Technical architecture deep-dive (component design, data flow)
   2. Prompt engineering workshop (reasoning prompt structure)
@@ -331,21 +358,22 @@
 
 ## Key Technical Decisions Made
 
-| Decision | Choice | Rationale |
-|----------|--------|-----------|
-| **Auth Method** | Magic Links OR Username/Password | Security mandatory, both options balance ease with protection |
-| **Batch Timing** | 15s idle trigger | UX sweet spot: not too spammy, not too slow |
-| **Large Doc Handling** | First 5 pages + metadata | Medical use case requirement, balances speed with accuracy |
-| **Deployment** | Docker Compose + .env | Open-source adoption requirement, simplicity critical |
-| **Database** | Postgres | Sessions, queue, feedback data, reliable and well-supported |
-| **AI Model** | Latest Gemini with Vision | Sophisticated multi-modal analysis, cost-effective, easy API |
-| **MVP Timeline** | 1 week | Forces ruthless prioritization, ships fast, iterates based on real use |
+| Decision               | Choice                           | Rationale                                                              |
+| ---------------------- | -------------------------------- | ---------------------------------------------------------------------- |
+| **Auth Method**        | Magic Links OR Username/Password | Security mandatory, both options balance ease with protection          |
+| **Batch Timing**       | 15s idle trigger                 | UX sweet spot: not too spammy, not too slow                            |
+| **Large Doc Handling** | First 5 pages + metadata         | Medical use case requirement, balances speed with accuracy             |
+| **Deployment**         | Docker Compose + .env            | Open-source adoption requirement, simplicity critical                  |
+| **Database**           | Postgres                         | Sessions, queue, feedback data, reliable and well-supported            |
+| **AI Model**           | Latest Gemini with Vision        | Sophisticated multi-modal analysis, cost-effective, easy API           |
+| **MVP Timeline**       | 1 week                           | Forces ruthless prioritization, ships fast, iterates based on real use |
 
 ---
 
 ## Proposed MVP Feature Set (Week 1)
 
 ✅ **MUST HAVE:**
+
 1. Folder monitoring for new scans
 2. Gemini Vision + OCR analysis
 3. Reasoning engine (consult PO logs, vendor lists)
@@ -361,6 +389,7 @@
 13. Basic README documentation
 
 ❌ **DEFERRED TO v2+:**
+
 - Desktop tool (Win/Mac)
 - PDF rotation in UI
 - Thumbnail previews in email
@@ -371,4 +400,4 @@
 
 ---
 
-*Session facilitated using the BMAD-METHOD™ brainstorming framework*
+_Session facilitated using the BMAD-METHOD™ brainstorming framework_

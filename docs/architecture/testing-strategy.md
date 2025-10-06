@@ -12,6 +12,7 @@ Frontend Unit Tests     Backend Unit Tests
 ```
 
 **Distribution:**
+
 - **Unit Tests:** 70% of test effort (fast, isolated, test business logic)
 - **Integration Tests:** 25% (test service interactions, database queries, API endpoints)
 - **E2E Tests:** 5% (manual testing of critical workflows, browser automation deferred to post-MVP)
@@ -19,6 +20,7 @@ Frontend Unit Tests     Backend Unit Tests
 ## Test Organization
 
 **Frontend Tests:**
+
 ```
 frontend/tests/
 ├── unit/
@@ -36,6 +38,7 @@ frontend/tests/
 ```
 
 **Backend Tests:**
+
 ```
 services/api/tests/
 ├── unit/
@@ -53,6 +56,7 @@ services/api/tests/
 ```
 
 **E2E Tests (Manual Checklist):**
+
 ```
 tests/e2e/
 └── manual-checklist.md            # Step-by-step manual test cases
@@ -61,6 +65,7 @@ tests/e2e/
 ## Test Examples
 
 **Frontend Component Test:**
+
 ```javascript
 // frontend/tests/unit/components/Button.test.js
 import { describe, it, expect } from 'vitest';
@@ -87,7 +92,9 @@ describe('Button Component', () => {
     let clicked = false;
     const button = new Button({
       text: 'Test',
-      onClick: () => { clicked = true; }
+      onClick: () => {
+        clicked = true;
+      },
     });
     const element = button.render();
 
@@ -98,6 +105,7 @@ describe('Button Component', () => {
 ```
 
 **Backend API Test:**
+
 ```typescript
 // services/api/tests/integration/documents.integration.test.ts
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
@@ -146,7 +154,7 @@ describe('Document API', () => {
       .set('Authorization', `Bearer ${authToken}`)
       .send({
         destination_folder: '/tmp/test-output',
-        filename: 'approved-test.pdf'
+        filename: 'approved-test.pdf',
       })
       .expect(200);
 
@@ -154,14 +162,13 @@ describe('Document API', () => {
   });
 
   it('Returns 401 without auth token', async () => {
-    await request(app)
-      .get(`/api/documents/${documentId}`)
-      .expect(401);
+    await request(app).get(`/api/documents/${documentId}`).expect(401);
   });
 });
 ```
 
 **E2E Test (Manual):**
+
 ```markdown
 # Manual E2E Test Checklist
 

@@ -109,6 +109,7 @@ ai.scanner/
 ```
 
 **Notes:**
+
 - Services use TypeScript transpiled to JavaScript at runtime via `tsx` (development) or `esbuild` (production)
 - Frontend uses vanilla JavaScript (ES2022 modules) with no build step for MVP (future: bundle with esbuild)
 - Shared package enables type sharing between frontend/backend (e.g., `import { Document } from '@ai-scanner/shared'`)

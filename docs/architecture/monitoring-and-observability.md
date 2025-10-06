@@ -8,6 +8,7 @@
 - **Performance Monitoring:** Custom metrics exposed via GET `/metrics` endpoints (Prometheus-compatible format for future Grafana dashboards)
 
 **MVP Monitoring:**
+
 - Pino logs with severity levels (debug, info, warn, error)
 - Health check endpoints (`/health`, `/health/db`, `/health/redis`) for uptime monitoring
 - Manual log review: `docker-compose logs -f --tail=100 worker` (tail recent worker logs)
@@ -15,6 +16,7 @@
 ## Key Metrics
 
 **Frontend Metrics:**
+
 - **Core Web Vitals:** (measured via Chrome DevTools, manual review)
   - LCP (Largest Contentful Paint): <2.5s
   - FID (First Input Delay): <100ms
@@ -24,6 +26,7 @@
 - **User Interactions:** Manual testing (count clicks to approve, measure time from email to approval)
 
 **Backend Metrics (Exposed via GET /metrics):**
+
 ```javascript
 // Example metrics output (Prometheus format)
 // GET /metrics response:
@@ -68,6 +71,7 @@ api_request_duration_ms_bucket{method="POST",path="/api/documents/:id/approve",l
 ```
 
 **Metric Collection Implementation:**
+
 ```typescript
 // services/api/src/utils/metrics.ts
 class Metrics {
@@ -111,6 +115,7 @@ metrics.incrementCounter('gemini_api_requests_total', { status: 'success' });
 ```
 
 **Health Monitoring:**
+
 - Manual checks: `curl http://localhost:3000/health` (should return 200 OK)
 - Automated uptime monitoring (post-MVP): UptimeRobot or Pingdom pinging `/health` every 5 minutes
 - Alert on 3 consecutive failures (email to admin)

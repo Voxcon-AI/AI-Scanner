@@ -71,7 +71,7 @@
 2. Response validator checks required fields present: document_type, confidence_score, recommended_folder_path, recommended_filename
 3. Confidence score validated as number between 0-100, defaults to 50 if invalid
 4. Recommended folder path validated against loaded folder structure, fallback to "/uncategorized" if invalid
-5. Recommended filename sanitized: remove invalid characters (/, \, :, *, ?, ", <, >, |), replace spaces with underscores, ensure extension preserved
+5. Recommended filename sanitized: remove invalid characters (/, \, :, \*, ?, ", <, >, |), replace spaces with underscores, ensure extension preserved
 6. Extracted fields stored as JSONB in documents.analysis_result column
 7. If validation fails, log WARNING with validation errors and use fallback values (don't fail entire job)
 8. Reasoning text truncated to 500 characters if exceeds limit

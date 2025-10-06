@@ -37,4 +37,4 @@ This architecture provides comprehensive technical guidance for AI agent-driven 
 
 ---
 
-*Architecture v1.0 - Created 2025-10-03 using BMAD-METHOD™ framework by Winston (Architect Agent)*
+_Architecture v1.0 - Created 2025-10-03 using BMAD-METHOD™ framework by Winston (Architect Agent)_

@@ -58,7 +58,7 @@ With increasing regulatory scrutiny (ISO audits, HIPAA compliance) and remote wo
 **ai.scanner** combines three key technologies into a seamless workflow:
 
 1. **Folder Monitoring:** Watch network folder (scanner output) for new documents
-2. **AI Reasoning Engine:** Use Gemini Vision + OCR to not just classify documents, but *reason* about them—consulting external data sources (PO logs, vendor lists, folder structures) to fill information gaps and make intelligent recommendations
+2. **AI Reasoning Engine:** Use Gemini Vision + OCR to not just classify documents, but _reason_ about them—consulting external data sources (PO logs, vendor lists, folder structures) to fill information gaps and make intelligent recommendations
 3. **Human-in-the-Loop Approval:** Present recommendations via web interface with confidence scores, editable fields, and clear approval workflow before any file operations
 
 ### Key Differentiators
@@ -79,7 +79,7 @@ With increasing regulatory scrutiny (ISO audits, HIPAA compliance) and remote wo
 
 ### High-Level Vision
 
-A world where scanning a document is the *last* time you think about filing it. The AI becomes your intelligent filing assistant, learning your organization's patterns and handling 95%+ of routing decisions with minimal review time.
+A world where scanning a document is the _last_ time you think about filing it. The AI becomes your intelligent filing assistant, learning your organization's patterns and handling 95%+ of routing decisions with minimal review time.
 
 ---
 
@@ -88,24 +88,28 @@ A world where scanning a document is the *last* time you think about filing it. 
 ### Primary User Segment: QMS Managers & Compliance Officers
 
 **Demographic/Firmographic Profile:**
+
 - Small-to-medium manufacturing companies (10-200 employees)
 - ISO 9001/AS9100 certified or pursuing certification
 - 5-50 document scans per day
 - Windows-based networks with shared folder structures
 
 **Current Behaviors and Workflows:**
+
 - Scan packing lists, purchase orders, inspection reports at receiving desk
 - Walk back to office, manually open PDFs, identify vendor/PO, navigate folder structure
 - Rename files according to naming conventions, move to appropriate folders
 - Update tracking spreadsheets or QMS software
 
 **Specific Needs and Pain Points:**
+
 - Need fast routing during busy receiving periods (morning deliveries)
 - Struggle with abbreviated vendor names on packing lists
 - Fear of audit findings due to misfiled documents
 - Want to train new employees quickly without extensive folder structure memorization
 
 **Goals They're Trying to Achieve:**
+
 - Maintain audit-ready document filing system
 - Reduce time spent on administrative tasks
 - Ensure consistent naming and filing across team members
@@ -114,24 +118,28 @@ A world where scanning a document is the *last* time you think about filing it. 
 ### Secondary User Segment: Medical Office Staff
 
 **Demographic/Firmographic Profile:**
+
 - Small medical practices (1-5 providers)
 - HIPAA-compliant environments
 - High-volume scanning (patient charts, insurance forms, lab results)
 - Mac or Windows workstations
 
 **Current Behaviors and Workflows:**
+
 - Scan patient charts after appointments (often 20-50+ pages)
 - Manually rename with patient name and date
 - File in patient folder structures or import to EHR systems
 - Handle insurance forms, referrals, lab results separately
 
 **Specific Needs and Pain Points:**
+
 - Large multi-page documents slow down processing
 - Patient privacy requires careful file handling
 - Need fast turnaround between appointments
 - Misrouted documents create compliance risks and patient safety issues
 
 **Goals They're Trying to Achieve:**
+
 - Maintain HIPAA-compliant document management
 - Reduce after-hours administrative burden
 - Ensure accurate patient record filing
@@ -200,6 +208,7 @@ A world where scanning a document is the *last* time you think about filing it. 
 ### MVP Success Criteria
 
 **MVP is successful if:**
+
 1. A non-technical user can install and configure ai.scanner in <15 minutes using README
 2. System correctly identifies document type with 70%+ accuracy on first 20 documents
 3. Average processing time (scan → email) is <15 seconds
@@ -214,6 +223,7 @@ A world where scanning a document is the *last* time you think about filing it. 
 ### Phase 2 Features
 
 **Desktop Management Tool (Win/Mac):**
+
 - Native application with system tray integration
 - Desktop notifications when documents pending review
 - Drag-and-drop document submission
@@ -221,18 +231,21 @@ A world where scanning a document is the *last* time you think about filing it. 
 - Live queue monitoring
 
 **PDF Enhancement Tools:**
+
 - Page rotation before analysis (portrait scanner handling landscape docs)
 - Page extraction/removal
 - Merge multiple scans into single document
 - Auto-rotate pages using vision model
 
 **Learning & Feedback Loop:**
+
 - Thumbs up/down on recommendations
 - Track user corrections over time
 - Automated prompt engineering based on feedback patterns
 - Adaptive confidence thresholds per document type
 
 **Advanced Routing Intelligence:**
+
 - Fuzzy matching for vendor name variations
 - Historical pattern recognition (user always files X type in Y location)
 - Cross-reference multiple data sources (accounting system, CRM, ERP)
@@ -335,13 +348,13 @@ ai.scanner ecosystem includes marketplace of industry-specific templates (ISO QM
 
 ### Key Risks
 
-- **API Cost Escalation:** Heavy usage could exceed Gemini free tier, requiring paid plan. *Mitigation: Monitor usage, implement rate limiting, document cost expectations in README*
-- **Gemini Model Changes:** API deprecation or model behavior changes could break functionality. *Mitigation: Version pin API, design for model swappability*
-- **Email Deliverability:** Batch emails flagged as spam or delayed by mail servers. *Mitigation: Support multiple email methods, consider web dashboard as alternative*
-- **Large Document Performance:** 50+ page documents may timeout or exceed API limits. *Mitigation: First 5 pages analysis strategy, implement fallback logic*
-- **Scanner Integration Brittleness:** Network folder monitoring may miss files due to timing issues. *Mitigation: Implement retry logic, file lock detection*
-- **Multi-Platform Compatibility:** Docker behavior differences on Windows/Mac vs Linux. *Mitigation: Test on multiple platforms, provide platform-specific setup docs*
-- **Security Vulnerabilities:** Authentication or file handling bugs create exposure risk. *Mitigation: Security-focused code review, input validation, principle of least privilege*
+- **API Cost Escalation:** Heavy usage could exceed Gemini free tier, requiring paid plan. _Mitigation: Monitor usage, implement rate limiting, document cost expectations in README_
+- **Gemini Model Changes:** API deprecation or model behavior changes could break functionality. _Mitigation: Version pin API, design for model swappability_
+- **Email Deliverability:** Batch emails flagged as spam or delayed by mail servers. _Mitigation: Support multiple email methods, consider web dashboard as alternative_
+- **Large Document Performance:** 50+ page documents may timeout or exceed API limits. _Mitigation: First 5 pages analysis strategy, implement fallback logic_
+- **Scanner Integration Brittleness:** Network folder monitoring may miss files due to timing issues. _Mitigation: Implement retry logic, file lock detection_
+- **Multi-Platform Compatibility:** Docker behavior differences on Windows/Mac vs Linux. _Mitigation: Test on multiple platforms, provide platform-specific setup docs_
+- **Security Vulnerabilities:** Authentication or file handling bugs create exposure risk. _Mitigation: Security-focused code review, input validation, principle of least privilege_
 
 ### Open Questions
 
@@ -374,6 +387,7 @@ ai.scanner ecosystem includes marketplace of industry-specific templates (ISO QM
 ### A. Research Summary
 
 **Brainstorming Session Results (2025-10-03):**
+
 - 35+ ideas generated across First Principles, SCAMPER, and Role Playing techniques
 - Key insight: This is a reasoning problem, not just a classification problem
 - Identified dual-user scenario (QMS + medical) validating multi-industry approach
@@ -381,6 +395,7 @@ ai.scanner ecosystem includes marketplace of industry-specific templates (ISO QM
 - Confirmed user approval as non-negotiable for compliance/trust
 
 **Competitive Landscape:**
+
 - Enterprise DMS (DocuWare, M-Files): $10k-$100k, complex setup, overkill for SMBs
 - OCR Tools (ABBYY, Adobe): Extract text but no intelligent routing
 - Scanner Software (Brother, Fujitsu): Basic folder routing with no intelligence
@@ -389,6 +404,7 @@ ai.scanner ecosystem includes marketplace of industry-specific templates (ISO QM
 ### B. Stakeholder Input
 
 **Primary Stakeholder (Project Owner):**
+
 - Real-world QMS user with daily packing list routing pain
 - Secondary use case: Medical practice (validates multi-industry need)
 - Strong preference for open-source, community-driven solution
@@ -428,5 +444,5 @@ This Project Brief provides the full context for **ai.scanner**. The next step i
 
 ---
 
-*Project Brief created using BMAD-METHOD™ framework*
-*Based on brainstorming session results from 2025-10-03*
+_Project Brief created using BMAD-METHOD™ framework_
+_Based on brainstorming session results from 2025-10-03_
