@@ -64,7 +64,9 @@ services:
   # PostgreSQL - Development with exposed logs
   postgres:
     environment:
-      POSTGRES_HOST_AUTH_METHOD: trust # Dev only - no password required
+      # ⚠️ SECURITY WARNING: Dev only - NEVER use in production!
+      # This disables password authentication for local development convenience.
+      POSTGRES_HOST_AUTH_METHOD: trust
     command: postgres -c log_statement=all
 
   # Redis - Development with verbose logging
