@@ -1,0 +1,173 @@
+version: '3.8'
+
+services:
+  # PostgreSQL 16 - Primary database for documents, users, and analysis results
+  postgres:
+    image: postgres:16
+    container_name: ai-scanner-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-ai_scanner}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-postgres}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ai-scanner-network
+
+  # Redis 7 - Queue management, session cache, and rate limiting
+  redis:
+    image: redis:7-alpine
+    container_name: ai-scanner-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    ports:
+      - '6379:6379'
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - ai-scanner-network
+
+  # API Service - Express.js REST API (port 3000)
+  # Handles document approval, rejection, and file movement
+  api:
+    build:
+      context: ../services/api
+      dockerfile: Dockerfile
+    container_name: ai-scanner-api
+    restart: unless-stopped
+    env_file:
+      - ../.env
+    ports:
+      - '3000:3000'
+    volumes:
+      # Read-only access to scanned documents for preview
+      - ${SCAN_FOLDER_PATH:-./data/scan-folder}:/mnt/scan-folder:ro
+      # Read-write access to output folders for file movement
+      - ${OUTPUT_FOLDERS_BASE:-./data/output-folders}:/mnt/output-folders:rw
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000/health']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+    networks:
+      - ai-scanner-network
+
+  # Watcher Service - File system polling (port 3001)
+  # Monitors scan folder for new documents and enqueues them
+  watcher:
+    build:
+      context: ../services/watcher
+      dockerfile: Dockerfile
+    container_name: ai-scanner-watcher
+    restart: unless-stopped
+    env_file:
+      - ../.env
+    ports:
+      - '3001:3001'
+    volumes:
+      # Read-only access to scan folder for monitoring
+      - ${SCAN_FOLDER_PATH:-./data/scan-folder}:/mnt/scan-folder:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:3001/health']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+    networks:
+      - ai-scanner-network
+
+  # Worker Service - AI analysis processor (port 3002)
+  # Consumes queue jobs and analyzes documents with Gemini API
+  worker:
+    build:
+      context: ../services/worker
+      dockerfile: Dockerfile
+    container_name: ai-scanner-worker
+    restart: unless-stopped
+    env_file:
+      - ../.env
+    ports:
+      - '3002:3002'
+    volumes:
+      # Read-only access to scanned documents for AI analysis
+      - ${SCAN_FOLDER_PATH:-./data/scan-folder}:/mnt/scan-folder:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:3002/health']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+    networks:
+      - ai-scanner-network
+
+  # Mailer Service - Email notification service (port 3003)
+  # Sends batch summary emails with analysis results
+  mailer:
+    build:
+      context: ../services/mailer
+      dockerfile: Dockerfile
+    container_name: ai-scanner-mailer
+    restart: unless-stopped
+    env_file:
+      - ../.env
+    ports:
+      - '3003:3003'
+    volumes:
+      # Read-only access for generating document thumbnails in emails
+      - ${SCAN_FOLDER_PATH:-./data/scan-folder}:/mnt/scan-folder:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:3003/health']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+    networks:
+      - ai-scanner-network
+
+# Named volumes for data persistence
+volumes:
+  postgres_data:
+    name: ai-scanner-postgres-data
+  redis_data:
+    name: ai-scanner-redis-data
+
+# Custom bridge network for inter-service communication
+# Services can reach each other via DNS (e.g., postgres:5432, redis://redis:6379)
+networks:
+  ai-scanner-network:
+    name: ai-scanner-network
+    driver: bridge

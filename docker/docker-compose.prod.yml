@@ -1,0 +1,95 @@
+# Production overrides for docker-compose.yml
+# Usage: docker-compose -f docker/docker-compose.yml -f docker/docker-compose.prod.yml up -d
+
+version: '3.8'
+
+services:
+  # API - Production build with resource limits
+  api:
+    build:
+      context: ../services/api
+      dockerfile: Dockerfile
+      target: production
+    environment:
+      NODE_ENV: production
+      LOG_LEVEL: info
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+    command: node dist/index.js
+
+  # Watcher - Production build with resource limits
+  watcher:
+    build:
+      context: ../services/watcher
+      dockerfile: Dockerfile
+      target: production
+    environment:
+      NODE_ENV: production
+      LOG_LEVEL: info
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+    command: node dist/index.js
+
+  # Worker - Production build with higher resource allocation for AI processing
+  worker:
+    build:
+      context: ../services/worker
+      dockerfile: Dockerfile
+      target: production
+    environment:
+      NODE_ENV: production
+      LOG_LEVEL: info
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 1G
+        reservations:
+          cpus: '1.0'
+          memory: 512M
+    command: node dist/index.js
+
+  # Mailer - Production build with resource limits
+  mailer:
+    build:
+      context: ../services/mailer
+      dockerfile: Dockerfile
+      target: production
+    environment:
+      NODE_ENV: production
+      LOG_LEVEL: info
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+    command: node dist/index.js
+
+  # PostgreSQL - Production with connection limits
+  postgres:
+    environment:
+      POSTGRES_MAX_CONNECTIONS: 100
+    command: postgres -c shared_buffers=256MB -c max_connections=100
+
+  # Redis - Production with memory limits
+  redis:
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    deploy:
+      resources:
+        limits:
+          memory: 512M

@@ -1,0 +1,72 @@
+# Development overrides for docker-compose.yml
+# Usage: docker-compose -f docker/docker-compose.yml -f docker/docker-compose.dev.yml up
+
+version: '3.8'
+
+services:
+  # API - Development mode with hot reload
+  api:
+    build:
+      context: ../services/api
+      dockerfile: Dockerfile
+      target: development
+    environment:
+      NODE_ENV: development
+      LOG_LEVEL: debug
+    volumes:
+      # Mount source code for hot reload with tsx watch
+      - ../services/api/src:/app/src:ro
+      - ../shared:/app/shared:ro
+    command: npm run dev
+
+  # Watcher - Development mode with hot reload
+  watcher:
+    build:
+      context: ../services/watcher
+      dockerfile: Dockerfile
+      target: development
+    environment:
+      NODE_ENV: development
+      LOG_LEVEL: debug
+    volumes:
+      - ../services/watcher/src:/app/src:ro
+      - ../shared:/app/shared:ro
+    command: npm run dev
+
+  # Worker - Development mode with hot reload
+  worker:
+    build:
+      context: ../services/worker
+      dockerfile: Dockerfile
+      target: development
+    environment:
+      NODE_ENV: development
+      LOG_LEVEL: debug
+    volumes:
+      - ../services/worker/src:/app/src:ro
+      - ../shared:/app/shared:ro
+    command: npm run dev
+
+  # Mailer - Development mode with hot reload
+  mailer:
+    build:
+      context: ../services/mailer
+      dockerfile: Dockerfile
+      target: development
+    environment:
+      NODE_ENV: development
+      LOG_LEVEL: debug
+    volumes:
+      - ../services/mailer/src:/app/src:ro
+      - ../shared:/app/shared:ro
+    command: npm run dev
+
+  # PostgreSQL - Development with exposed logs
+  postgres:
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust # Dev only - no password required
+    command: postgres -c log_statement=all
+
+  # Redis - Development with verbose logging
+  redis:
+    command: redis-server --appendonly yes --loglevel verbose
