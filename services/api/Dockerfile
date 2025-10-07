@@ -1,6 +1,6 @@
 # Multi-stage Dockerfile for API service
 # Development stage: hot reload with tsx watch
-# Production stage: compiled JavaScript with node
+# Production stage: runs TypeScript with tsx (not compiled)
 
 # ============================================
 # Development stage
@@ -25,24 +25,12 @@ COPY src ./src
 # Expose port
 EXPOSE 3000
 
+# Health check
+HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
+  CMD curl -f http://localhost:3000/health || exit 1
+
 # Development command (can be overridden by docker-compose)
 CMD ["npm", "run", "dev"]
-
-# ============================================
-# Build stage
-# ============================================
-FROM node:24.5.0-alpine AS build
-
-WORKDIR /app
-
-# Copy package files and install dependencies
-COPY package*.json ./
-COPY tsconfig.json ./
-RUN npm ci --only=production
-
-# Copy source and build
-COPY src ./src
-RUN npm run build
 
 # ============================================
 # Production stage
@@ -54,12 +42,13 @@ WORKDIR /app
 # Install curl for health checks
 RUN apk add --no-cache curl
 
-# Copy package files and install production dependencies only
+# Copy package files and install all dependencies (including tsx)
 COPY package*.json ./
-RUN npm ci --only=production
+COPY tsconfig.json ./
+RUN npm install
 
-# Copy compiled JavaScript from build stage
-COPY --from=build /app/dist ./dist
+# Copy source code
+COPY src ./src
 
 # Copy migrations (needed for startup migration execution)
 COPY migrations ./migrations
@@ -68,5 +57,9 @@ COPY .migration.json ./
 # Expose port
 EXPOSE 3000
 
-# Production command
-CMD ["npm", "start"]
+# Health check
+HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
+  CMD curl -f http://localhost:3000/health || exit 1
+
+# Production command - run with tsx directly
+CMD ["npx", "tsx", "src/index.ts"]
